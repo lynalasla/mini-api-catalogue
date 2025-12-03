@@ -1,16 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const fs = require('fs');
+import express from 'express';
+import fs from 'fs';
+
+const productRouter = express.Router();
 const path = './data/products.json';
 
 // Lire tous les produits
-router.get('/', (req, res) => {
+productRouter.get('/', (req, res) => {
   const products = JSON.parse(fs.readFileSync(path));
   res.json(products);
 });
 
 // Ajouter un produit
-router.post('/', (req, res) => {
+productRouter.post('/', (req, res) => {
   const products = JSON.parse(fs.readFileSync(path));
   const newProduct = {
     id: products.length + 1,
@@ -24,7 +25,7 @@ router.post('/', (req, res) => {
 });
 
 // Mettre à jour un produit
-router.put('/:id', (req, res) => {
+productRouter.put('/:id', (req, res) => {
   const products = JSON.parse(fs.readFileSync(path));
   const product = products.find(p => p.id == req.params.id);
   if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -36,7 +37,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Supprimer un produit
-router.delete('/:id', (req, res) => {
+productRouter.delete('/:id', (req, res) => {
   let products = JSON.parse(fs.readFileSync(path));
   const product = products.find(p => p.id == req.params.id);
   if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -45,4 +46,4 @@ router.delete('/:id', (req, res) => {
   res.json({ message: 'Product deleted' });
 });
 
-module.exports = router;
+export default productRouter;
