@@ -14,6 +14,9 @@ const app = express();
 // Middleware pour parser les requêtes JSON
 app.use(express.json());
 
+// Servir les fichiers statiques (HTML, CSS, JS)
+app.use(express.static('public'));
+
 /**
  * Route racine de l'API
  * GET /
