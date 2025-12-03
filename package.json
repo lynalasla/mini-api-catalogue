@@ -3,18 +3,29 @@
   "version": "1.0.0",
   "description": "Une mini API Node.js pour gérer des produits et catégories",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio"
   },
-  "keywords": ["nodejs", "api", "crud", "express"],
+  "keywords": [
+    "nodejs",
+    "api",
+    "crud",
+    "express"
+  ],
   "author": "Ton Nom",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^5.19.1",
     "express": "^4.18.2",
     "mysql2": "^3.6.5"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "prisma": "^5.19.1"
   }
 }

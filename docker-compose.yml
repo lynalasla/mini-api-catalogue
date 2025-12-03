@@ -20,6 +20,22 @@ services:
       timeout: 20s
       retries: 10
 
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin-catalogue
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: catalogue_user
+      PMA_PASSWORD: catalogue_password
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
   mini-api-catalogue:
     build: .
     container_name: mini-api-catalogue
