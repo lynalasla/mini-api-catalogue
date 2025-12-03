@@ -1,28 +1,32 @@
 /**
  * Module de gestion des routes pour les produits
- * Fournit les endpoints CRUD pour gérer les produits du catalogue
+ * Fournit les endpoints CRUD pour gérer les produits du catalogue avec MySQL
  */
 
 // Importation des modules nécessaires
 import express from 'express';
-import fs from 'fs';
+import db from '../config/database.js';
 
 // Création du router Express pour les produits
 const productRouter = express.Router();
-
-// Chemin vers le fichier JSON contenant les produits
-const path = './data/products.json';
 
 /**
  * GET /products
  * Récupère la liste complète de tous les produits
  * @returns {Array} Liste des produits au format JSON
  */
-productRouter.get('/', (req, res) => {
-  // Lecture du fichier JSON contenant les produits
-  const products = JSON.parse(fs.readFileSync(path));
-  // Envoi de la réponse avec tous les produits
-  res.json(products);
+productRouter.get('/', async (req, res) => {
+  try {
+    const [products] = await db.query(`
+      SELECT p.*, c.name as category_name 
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+    `);
+    res.json(products);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des produits:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 /**
@@ -33,26 +37,31 @@ productRouter.get('/', (req, res) => {
  * @body {number} categoryId - L'ID de la catégorie du produit
  * @returns {Object} Le produit créé avec son ID généré
  */
-productRouter.post('/', (req, res) => {
-  // Lecture des produits existants
-  const products = JSON.parse(fs.readFileSync(path));
-  
-  // Création d'un nouveau produit avec un ID auto-incrémenté
-  const newProduct = {
-    id: products.length + 1,
-    name: req.body.name,
-    price: req.body.price,
-    categoryId: req.body.categoryId
-  };
-  
-  // Ajout du nouveau produit au tableau
-  products.push(newProduct);
-  
-  // Sauvegarde dans le fichier JSON avec indentation
-  fs.writeFileSync(path, JSON.stringify(products, null, 2));
-  
-  // Réponse avec le code 201 (Created) et le produit créé
-  res.status(201).json(newProduct);
+productRouter.post('/', async (req, res) => {
+  try {
+    const { name, price, categoryId } = req.body;
+    
+    if (!name || !price) {
+      return res.status(400).json({ error: 'Le nom et le prix sont requis' });
+    }
+    
+    const [result] = await db.query(
+      'INSERT INTO products (name, price, category_id) VALUES (?, ?, ?)',
+      [name, price, categoryId || null]
+    );
+    
+    const newProduct = {
+      id: result.insertId,
+      name: name,
+      price: price,
+      categoryId: categoryId || null
+    };
+    
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error('Erreur lors de la création du produit:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 /**
@@ -64,26 +73,34 @@ productRouter.post('/', (req, res) => {
  * @body {number} categoryId - Le nouvel ID de catégorie du produit
  * @returns {Object} Le produit mis à jour ou une erreur 404
  */
-productRouter.put('/:id', (req, res) => {
-  // Lecture des produits existants
-  const products = JSON.parse(fs.readFileSync(path));
-  
-  // Recherche du produit par ID
-  const product = products.find(p => p.id == req.params.id);
-  
-  // Vérification de l'existence du produit
-  if (!product) return res.status(404).json({ error: 'Product not found' });
-  
-  // Mise à jour des propriétés du produit
-  product.name = req.body.name;
-  product.price = req.body.price;
-  product.categoryId = req.body.categoryId;
-  
-  // Sauvegarde des modifications dans le fichier
-  fs.writeFileSync(path, JSON.stringify(products, null, 2));
-  
-  // Réponse avec le produit mis à jour
-  res.json(product);
+productRouter.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, categoryId } = req.body;
+    
+    if (!name || !price) {
+      return res.status(400).json({ error: 'Le nom et le prix sont requis' });
+    }
+    
+    const [result] = await db.query(
+      'UPDATE products SET name = ?, price = ?, category_id = ? WHERE id = ?',
+      [name, price, categoryId || null, id]
+    );
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    res.json({
+      id: parseInt(id),
+      name: name,
+      price: price,
+      categoryId: categoryId || null
+    });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du produit:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 /**
@@ -92,24 +109,24 @@ productRouter.put('/:id', (req, res) => {
  * @param {number} id - L'ID du produit à supprimer
  * @returns {Object} Message de confirmation ou erreur 404
  */
-productRouter.delete('/:id', (req, res) => {
-  // Lecture des produits existants
-  let products = JSON.parse(fs.readFileSync(path));
-  
-  // Recherche du produit à supprimer
-  const product = products.find(p => p.id == req.params.id);
-  
-  // Vérification de l'existence du produit
-  if (!product) return res.status(404).json({ error: 'Product not found' });
-  
-  // Filtrage pour retirer le produit du tableau
-  products = products.filter(p => p.id != req.params.id);
-  
-  // Sauvegarde du tableau mis à jour
-  fs.writeFileSync(path, JSON.stringify(products, null, 2));
-  
-  // Réponse avec message de confirmation
-  res.json({ message: 'Product deleted' });
+productRouter.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const [result] = await db.query(
+      'DELETE FROM products WHERE id = ?',
+      [id]
+    );
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    res.json({ message: 'Product deleted' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du produit:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 // Export du router pour utilisation dans server.js
