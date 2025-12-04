@@ -371,3 +371,370 @@ mini-api-catalogue/
     ├── .env                  # Variables d'environnement
     ├── .gitignore
     └── sonar-project.properties  # SonarQube
+
+---
+
+## ��� Installation rapide sur un nouveau PC
+
+### Prérequis système
+
+Assurez-vous d'avoir installé :
+- ✅ **Git** : [Download Git](https://git-scm.com/downloads)
+- ✅ **Node.js 20+** : [Download Node.js](https://nodejs.org/)
+- ✅ **Docker Desktop** : [Download Docker](https://www.docker.com/products/docker-desktop/)
+- ✅ **Python 3.12+** (optionnel pour A/B Testing) : [Download Python](https://www.python.org/downloads/)
+
+### Étape 1 : Cloner le repository
+
+```bash
+# Cloner depuis GitHub
+git clone https://github.com/lynalasla/mini-api-catalogue.git
+
+# Entrer dans le dossier
+cd mini-api-catalogue
+
+# Basculer sur la branche frontend (version complète)
+git checkout frontend
+```
+
+### Étape 2 : Configuration de l'environnement
+
+```bash
+# Créer le fichier .env à la racine du projet
+cat > .env << 'ENVEOF'
+# Configuration Base de données
+DATABASE_URL="mysql://catalogue_user:catalogue_password@localhost:3306/catalogue"
+
+# JWT Secret (CHANGEZ cette valeur en production)
+JWT_SECRET="votre_secret_jwt_super_securise_changez_moi_en_production"
+
+# Environnement
+NODE_ENV="production"
+
+# Ports
+PORT=3000
+CLIENT_PORT=5173
+ENVEOF
+```
+
+**��� Sur Windows, créez manuellement le fichier `.env` avec le contenu ci-dessus**
+
+### Étape 3 : Installer les dépendances
+
+```bash
+# Dépendances backend
+npm install
+
+# Dépendances frontend
+cd client
+npm install
+cd ..
+
+# Dépendances Python A/B Testing (optionnel)
+cd ab_testing
+pip install -r requirements.txt
+cd ..
+```
+
+### Étape 4 : Démarrer Docker
+
+```bash
+# Lancer tous les conteneurs (MySQL, API, Frontend, Nginx, phpMyAdmin)
+docker-compose up -d
+
+# Attendre que MySQL soit complètement démarré
+echo "⏳ Attente du démarrage de MySQL (30 secondes)..."
+sleep 30
+
+# Vérifier que tous les conteneurs sont UP
+docker-compose ps
+```
+
+**Résultat attendu** :
+```
+NAME                    STATUS
+mysql-catalogue         Up (healthy)
+mini-api-catalogue      Up
+react-dev              Up
+belibeli-nginx         Up
+phpmyadmin             Up
+```
+
+### Étape 5 : Initialiser la base de données
+
+```bash
+# Générer le client Prisma
+npx prisma generate
+
+# Appliquer les migrations (créer les tables)
+npx prisma migrate deploy
+
+# Insérer les données de démonstration (seed)
+npm run prisma:seed
+```
+
+**✅ Résultat** : Base de données créée avec 2 catégories, 21 produits, 1 utilisateur admin
+
+### Étape 6 : Restaurer les données depuis un backup (optionnel)
+
+Si vous avez un fichier de backup Excel provenant d'un ancien PC :
+
+```bash
+# 1. Copier votre fichier de backup dans le dossier backups/
+# Exemple : backups/database_backup_2025-12-04T23-34-09.xlsx
+
+# 2. Lister les backups disponibles
+ls -la backups/
+
+# 3. Restaurer depuis le backup
+npm run restore backups/database_backup_2025-12-04T23-34-09.xlsx
+
+# 4. Vérifier la restauration
+npx prisma studio
+# Ouvrir http://localhost:5555 dans votre navigateur
+```
+
+**⚠️ Important** : Les mots de passe des utilisateurs ne sont pas restaurés pour des raisons de sécurité. Les utilisateurs devront réinitialiser leurs mots de passe.
+
+### Étape 7 : Vérifier l'installation
+
+```bash
+# Tester l'API Backend
+curl http://localhost:3000/api/products
+
+# Tester le Frontend (ouvrir dans le navigateur)
+# ��� http://localhost:5173
+
+# Tester Nginx (reverse proxy)
+# ��� http://localhost:80
+
+# Tester phpMyAdmin (gestion base de données)
+# ��� http://localhost:8080
+# Utilisateur: catalogue_user
+# Mot de passe: catalogue_password
+
+# Voir les logs en temps réel
+docker-compose logs -f
+```
+
+### Étape 8 : Créer votre premier backup
+
+```bash
+# Créer une sauvegarde de votre base de données
+npm run backup
+
+# Le fichier sera créé dans backups/ avec un horodatage
+# Exemple : backups/database_backup_2025-12-05T10-30-45.xlsx
+```
+
+---
+
+## ��� Checklist d'installation complète
+
+Cochez chaque étape pour vous assurer que tout fonctionne :
+
+- [ ] Git, Node.js, Docker installés
+- [ ] Repository cloné depuis GitHub
+- [ ] Fichier `.env` créé avec les bonnes variables
+- [ ] Dépendances installées (`npm install` dans root et client/)
+- [ ] Docker containers démarrés (`docker-compose up -d`)
+- [ ] Base de données migrée (`npx prisma migrate deploy`)
+- [ ] Données seed insérées (`npm run prisma:seed`)
+- [ ] **(Optionnel)** Backup restauré (`npm run restore`)
+- [ ] API testée (http://localhost:3000/api/products)
+- [ ] Frontend accessible (http://localhost:5173)
+- [ ] Premier backup créé (`npm run backup`)
+
+**✅ Installation terminée ! Votre application est prête à être utilisée.**
+
+---
+
+## ��� Commandes utiles quotidiennes
+
+### Démarrage / Arrêt
+
+```bash
+# Démarrer l'application
+docker-compose up -d
+
+# Arrêter l'application
+docker-compose down
+
+# Redémarrer un service spécifique
+docker-compose restart mini-api-catalogue
+
+# Voir les logs en temps réel
+docker-compose logs -f
+
+# Voir le statut des conteneurs
+docker-compose ps
+```
+
+### Backup / Restore
+
+```bash
+# Créer un backup
+npm run backup
+
+# Restaurer depuis un backup
+npm run restore backups/fichier_backup.xlsx
+
+# Lister les backups disponibles
+ls -la backups/
+```
+
+### Base de données
+
+```bash
+# Ouvrir Prisma Studio (interface graphique)
+npx prisma studio
+
+# Créer une nouvelle migration
+npx prisma migrate dev --name nom_de_la_migration
+
+# Réinitialiser la base de données
+npx prisma migrate reset --force
+
+# Insérer les données de démonstration
+npm run prisma:seed
+```
+
+### Développement
+
+```bash
+# Mode développement backend (avec hot-reload)
+npm run dev
+
+# Mode développement frontend
+cd client
+npm run dev
+
+# Lancer les tests
+npm test
+
+# Vérifier les vulnérabilités
+npm audit
+
+# Mettre à jour les dépendances
+npm update
+```
+
+---
+
+## ��� Accès aux services
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend** | http://localhost:5173 | Interface utilisateur React |
+| **API Backend** | http://localhost:3000 | API REST Express |
+| **Nginx** | http://localhost:80 | Reverse proxy (production) |
+| **phpMyAdmin** | http://localhost:8080 | Interface MySQL |
+| **Prisma Studio** | http://localhost:5555 | ORM GUI (après `npx prisma studio`) |
+| **A/B Testing API** | http://localhost:5001 | API Flask Python |
+
+### Comptes par défaut
+
+**Utilisateur Admin** (après seed)
+- Email : `admin@example.com`
+- Mot de passe : `admin123`
+
+**Utilisateur Normal** (après seed)
+- Email : `user@example.com`
+- Mot de passe : `user123`
+
+**phpMyAdmin**
+- Utilisateur : `catalogue_user`
+- Mot de passe : `catalogue_password`
+- Base de données : `catalogue`
+
+---
+
+## ��� Dépannage rapide
+
+### Problème : "Port already in use"
+
+```bash
+# Windows - Trouver et tuer le processus
+netstat -ano | findstr :3000
+taskkill /F /PID <PID>
+
+# Ou changer le port dans docker-compose.yml
+```
+
+### Problème : "Cannot connect to MySQL"
+
+```bash
+# Attendre que MySQL soit prêt
+sleep 30
+
+# Vérifier les logs MySQL
+docker logs mysql-catalogue
+
+# Redémarrer MySQL
+docker-compose restart mysql
+```
+
+### Problème : "Prisma Client not generated"
+
+```bash
+# Régénérer Prisma Client
+npx prisma generate
+
+# Si échec, nettoyer et réinstaller
+rm -rf node_modules/.prisma
+npm install
+npx prisma generate
+```
+
+### Problème : Docker containers en Exit
+
+```bash
+# Voir les erreurs
+docker-compose logs
+
+# Reconstruire les images
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+**��� Pour plus de solutions** : Consultez `RECOVERY.md`
+
+---
+
+## ��� Documentation complémentaire
+
+- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Documentation complète de l'API REST
+- **[BACKUP_README.md](BACKUP_README.md)** - Guide détaillé backup/restore
+- **[RECOVERY.md](RECOVERY.md)** - Procédures de récupération d'urgence
+- **[REACT_README.md](client/REACT_README.md)** - Documentation frontend React
+
+---
+
+## ��� Contribution
+
+Les contributions sont les bienvenues ! Pour contribuer :
+
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit vos changements (`git commit -m 'Add AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+---
+
+## ��� Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+---
+
+## ���‍��� Auteur
+
+**Lyna Lasla**
+- GitHub : [@lynalasla](https://github.com/lynalasla)
+- Repository : [mini-api-catalogue](https://github.com/lynalasla/mini-api-catalogue)
+
+---
+
+**��� Bon développement avec Mini API Catalogue !**
