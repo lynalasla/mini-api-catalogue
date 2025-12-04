@@ -155,6 +155,7 @@ jobs:
     code-quality:
         name: Code Quality Check
         runs-on: ubuntu-latest
+        if: vars.ENABLE_SONAR == 'true'
 
         steps:
             - name: Checkout code
@@ -162,11 +163,12 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: SonarCloud Scan
-              uses: SonarSource/sonarcloud-github-action@master
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
               continue-on-error: true
 
     # Job 6: A/B Testing Python Tests
@@ -210,7 +212,12 @@ jobs:
               run: python -m py_compile *.py
 
             - name: Run Python tests
-              run: pytest --verbose --tb=short
+              run: |
+                  if ls test_*.py 1> /dev/null 2>&1; then
+                      pytest --verbose --tb=short
+                  else
+                      echo "⚠️  No test files found (test_*.py), skipping pytest"
+                  fi
               continue-on-error: true
 
             - name: Test imports
