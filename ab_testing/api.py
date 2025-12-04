@@ -3,11 +3,13 @@ Flask API endpoints for A/B testing
 Integrate with the main Express API
 """
 
+from datetime import datetime
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
 from ab_test import ab_manager
 from statistical_analysis import analyze_test
-from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -136,7 +138,7 @@ def create_test():
             'test_id': test.test_id,
             'message': 'Test created successfully'
         })
-    except Exception as e:
+    except (ValueError, KeyError, TypeError) as e:
         return jsonify({'error': str(e)}), 400
 
 

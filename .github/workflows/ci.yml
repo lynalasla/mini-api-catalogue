@@ -205,7 +205,7 @@ jobs:
                   flake8 . --count --max-line-length=79 --statistics
 
             - name: Lint with pylint
-              run: pylint *.py --disable=C0103,C0114,C0115,C0116 --max-line-length=79
+              run: pylint *.py --disable=C0103,C0114,C0115,C0116,R0913,R0917,R0801 --max-line-length=79
               continue-on-error: true
 
             - name: Type check

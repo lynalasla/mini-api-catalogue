@@ -194,7 +194,7 @@ class ABTestManager:
     def export_results(self, test_id: str, filename: str):
         """Export test results to a JSON file"""
         results = self.get_test_results(test_id)
-        with open(filename, 'w') as f:
+        with open(filename, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2)
 
     def stop_test(self, test_id: str):

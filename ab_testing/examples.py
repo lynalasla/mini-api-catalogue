@@ -3,6 +3,7 @@ Examples of A/B tests for the e-commerce platform
 """
 
 import json
+import random
 from datetime import datetime, timedelta
 from ab_test import ab_manager
 
@@ -175,13 +176,11 @@ def setup_example_tests():
 
 def simulate_test_data():
     """Simulate some test data for analysis"""
-    import random
-
     users = [f"user_{i}" for i in range(1000)]
 
     for user_id in users:
         # Simulate page views
-        for test_id in ab_manager.tests.keys():
+        for test_id in ab_manager.tests:
             variant = ab_manager.get_variant(test_id, user_id)
 
             # Track page view

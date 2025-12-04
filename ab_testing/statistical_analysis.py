@@ -95,7 +95,7 @@ class ABTestAnalyzer:
         ])
 
         # Perform chi-square test
-        chi2, p_value, dof, expected = stats.chi2_contingency(observed)
+        chi2, p_value, dof, _expected = stats.chi2_contingency(observed)
 
         return {
             'chi_square': chi2,
@@ -246,15 +246,12 @@ def _get_recommendation(z_test_results: Dict, bayesian_prob: float) -> str:
         if z_test_results['lift'] > 0:
             return ("STRONGLY RECOMMEND: Deploy variant - "
                     "statistically significant improvement")
-        else:
-            return "STRONGLY RECOMMEND: Keep control - variant performs worse"
-    elif z_test_results['is_significant']:
+        return "STRONGLY RECOMMEND: Keep control - variant performs worse"
+    if z_test_results['is_significant']:
         if z_test_results['lift'] > 0:
             return ("RECOMMEND: Deploy variant - "
                     "statistically significant improvement")
-        else:
-            return "RECOMMEND: Keep control - variant performs worse"
-    elif bayesian_prob > 0.9:
+        return "RECOMMEND: Keep control - variant performs worse"
+    if bayesian_prob > 0.9:
         return "CONSIDER: Variant shows promise but needs more data"
-    else:
-        return "INCONCLUSIVE: Continue test or redesign experiment"
+    return "INCONCLUSIVE: Continue test or redesign experiment"
