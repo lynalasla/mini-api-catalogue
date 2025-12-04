@@ -51,9 +51,22 @@ services:
       - DB_PASSWORD=catalogue_password
       - DB_NAME=catalogue
       - DB_PORT=3306
+      - DATABASE_URL=mysql://catalogue_user:catalogue_password@mysql:3306/catalogue
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production-2024
     depends_on:
       mysql:
         condition: service_healthy
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: belibeli-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - mini-api-catalogue
+    restart: unless-stopped
 
 volumes:
   mysql_data:

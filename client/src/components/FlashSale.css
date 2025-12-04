@@ -1,0 +1,118 @@
+.flash-sale-container {
+  max-width: 1400px;
+  margin: 0 auto 32px;
+  padding: 0 24px;
+}
+
+.flash-sale {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.flash-sale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flash-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flash-icon {
+  font-size: 28px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.flash-title h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.flash-timer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timer-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.time-box {
+  background: #ff6b00;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 18px;
+  min-width: 44px;
+  text-align: center;
+}
+
+.timer-sep {
+  color: #ff6b00;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 0 2px;
+}
+
+.flash-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-arrow:hover {
+  background: #e5e7eb;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .flash-sale-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .flash-timer {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .flash-nav {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
