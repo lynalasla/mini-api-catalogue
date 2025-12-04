@@ -312,7 +312,7 @@ function AdminDashboard() {
     { name: 'Others', value: 8, color: '#6b7280' }
   ]);
   
-  const [topProducts, setTopProducts] = useState([
+  const [_topProducts, _setTopProducts] = useState([
     { name: 'Wireless Headphones', sales: 234, revenue: 11700, trend: 'up' },
     { name: 'Smart Watch', sales: 189, revenue: 28350, trend: 'up' },
     { name: 'Laptop Stand', sales: 156, revenue: 7800, trend: 'down' },
@@ -383,7 +383,7 @@ function AdminDashboard() {
         }));
       
       if (topProductsList.length > 0) {
-        setTopProducts(topProductsList);
+        _setTopProducts(topProductsList);
       }
       
       // Calculate revenue data from orders
@@ -462,8 +462,12 @@ function AdminDashboard() {
     if (user && user.role !== 'ADMIN') {
       navigate('/');
     }
+  }, [user, navigate]);
+
+  useEffect(() => {
     loadData();
-  }, [user, navigate, loadData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   console.log('Current customers state:', customers.length);
   console.log('Search query:', searchQuery);

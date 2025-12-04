@@ -1,5 +1,5 @@
 # Utilisation de l'image Node.js officielle
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Installation d'OpenSSL pour Prisma
 RUN apk add --no-cache openssl
