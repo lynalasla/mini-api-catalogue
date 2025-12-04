@@ -5,10 +5,6 @@ import './OrdersSection.css';
 function OrdersSection({ onBack }) {
   const [orders, setOrders] = useState([]);
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
   const loadOrders = async () => {
     try {
       const response = await axios.get('/api/orders', { withCredentials: true });
@@ -17,6 +13,11 @@ function OrdersSection({ onBack }) {
       console.error('Failed to load orders:', error);
     }
   };
+
+  useEffect(() => {
+    loadOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="orders-section">

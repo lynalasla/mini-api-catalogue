@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './FlashSale.css';
 
-function FlashSale() {
+export default function FlashSale() {
   const navigate = useNavigate();
   const [time, setTime] = useState({ hours: 8, minutes: 17, seconds: 56 });
   const [products, setProducts] = useState([]);
@@ -35,10 +35,6 @@ function FlashSale() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    loadFlashSaleProducts();
-  }, []);
-
   const loadFlashSaleProducts = async () => {
     try {
       const response = await axios.get('/api/products', { withCredentials: true });
@@ -48,6 +44,11 @@ function FlashSale() {
       console.error('Failed to load flash sale products:', error);
     }
   };
+
+  useEffect(() => {
+    loadFlashSaleProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formatTime = (num) => String(num).padStart(2, '0');
 
@@ -68,10 +69,7 @@ function FlashSale() {
     setScrollPosition(newPosition);
   };
 
-  const calculateDiscount = (price) => {
-    const originalPrice = parseFloat(price) * 1.5;
-    return Math.round(((originalPrice - parseFloat(price)) / originalPrice) * 100);
-  };
+
 
   return (
     <div className="flash-sale-container">
@@ -142,5 +140,3 @@ function FlashSale() {
     </div>
   );
 }
-
-export default FlashSale;

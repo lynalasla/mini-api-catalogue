@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import './Header.css';
 
-function Header({ onCartClick, onLoginClick, onSignupClick, onSearch }) {
+function Header({ onCartClick, onLoginClick, onSignupClick }) {
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
   const navigate = useNavigate();

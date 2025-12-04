@@ -3,16 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './TodaysForYou.css';
 
-function TodaysForYou({ showNotification, onLoginRequired, searchQuery }) {
+export default function TodaysForYou({ searchQuery }) {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [activeFilter, setActiveFilter] = useState('Best Seller');
 
   const filters = ['Best Seller', 'Keep Stylish', 'Special Discount', 'Official Store', 'Coveted Product'];
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
 
   const loadProducts = async () => {
     try {
@@ -23,6 +19,11 @@ function TodaysForYou({ showNotification, onLoginRequired, searchQuery }) {
       console.error('Failed to load products:', error);
     }
   };
+
+  useEffect(() => {
+    (async () => await loadProducts())();
+  }, []);
+
 
   const filteredProducts = useMemo(() => {
     if (!searchQuery || searchQuery.trim() === '') {
@@ -35,8 +36,8 @@ function TodaysForYou({ showNotification, onLoginRequired, searchQuery }) {
     );
   }, [products, searchQuery]);
 
-  const calculateDiscount = (price) => {
-    const originalPrice = parseFloat(price) * 1.3;
+  const _calculateDiscount = (price) => {
+    const originalPrice = parseFloat(price) * 1.5;
     return Math.round(((originalPrice - parseFloat(price)) / originalPrice) * 100);
   };
 
@@ -81,8 +82,8 @@ function TodaysForYou({ showNotification, onLoginRequired, searchQuery }) {
             <div className="todays-info">
               <h3 className="todays-name">{product.name}</h3>
               <div className="todays-rating">
-                <span className="stars">⭐ {(4.5 + Math.random() * 0.4).toFixed(1)}</span>
-                <span className="sold">• {Math.floor(Math.random() * 100) + 10}K+ Sold</span>
+                <span className="stars">⭐ {(4.5 + (product.id % 5) * 0.1).toFixed(1)}</span>
+                <span className="sold">• {Math.floor((product.id * 13) % 100) + 10}K+ Sold</span>
               </div>
               <div className="todays-price">
                 <span className="current">Rp{formatPrice(product.price)}</span>
@@ -96,5 +97,3 @@ function TodaysForYou({ showNotification, onLoginRequired, searchQuery }) {
     </div>
   );
 }
-
-export default TodaysForYou;

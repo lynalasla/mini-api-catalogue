@@ -7,10 +7,6 @@ function BestSellingStore() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
   const loadProducts = async () => {
     try {
       const response = await axios.get('/api/products', { withCredentials: true });
@@ -19,6 +15,11 @@ function BestSellingStore() {
       console.error('Failed to load products:', error);
     }
   };
+
+  useEffect(() => {
+    loadProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const stores = [
     {

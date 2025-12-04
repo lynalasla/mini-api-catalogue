@@ -5,6 +5,7 @@
 ### Errors Fixed
 
 1. **Unused imports (8 errors)** - Removed unused imports:
+
    - `random` from ab_test.py
    - `Tuple` from ab_test.py
    - `timedelta` from ab_test.py and cli.py
@@ -14,10 +15,12 @@
    - `Variant` from examples.py
 
 2. **Whitespace issues (114 errors)** - Fixed all:
+
    - Blank lines containing whitespace (W293)
    - Trailing whitespace (W291)
 
 3. **Line length violations (32 errors)** - Fixed all E501 errors:
+
    - Split long lines to stay under 79 characters
    - Improved code readability
 
@@ -103,14 +106,14 @@ python -c "from examples import setup_example_tests; setup_example_tests()"
 
 ## Error Summary
 
-| Category | Before | After |
-|----------|--------|-------|
-| Unused imports (F401) | 8 | 0 |
-| Whitespace (W293, W291) | 114 | 0 |
-| Line too long (E501) | 32 | 0 |
-| F-string issues (F541) | 4 | 0 |
-| Undefined names (F821) | 2 | 0 |
-| **TOTAL** | **160** | **0** |
+| Category                | Before  | After |
+| ----------------------- | ------- | ----- |
+| Unused imports (F401)   | 8       | 0     |
+| Whitespace (W293, W291) | 114     | 0     |
+| Line too long (E501)    | 32      | 0     |
+| F-string issues (F541)  | 4       | 0     |
+| Undefined names (F821)  | 2       | 0     |
+| **TOTAL**               | **160** | **0** |
 
 ## CI Status
 

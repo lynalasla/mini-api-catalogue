@@ -5,9 +5,11 @@ This project uses GitHub Actions for continuous integration and deployment.
 ## Workflows
 
 ### 1. CI Pipeline (`ci.yml`)
+
 Triggered on push and pull requests to `main`, `frontend`, and `develop` branches.
 
 **Jobs:**
+
 - **Backend Tests**: Runs backend tests with MySQL service
 - **Frontend Tests**: Builds and tests the React frontend
 - **Docker Build**: Builds Docker images for backend and frontend
@@ -15,14 +17,18 @@ Triggered on push and pull requests to `main`, `frontend`, and `develop` branche
 - **Code Quality**: Runs SonarCloud analysis (optional)
 
 ### 2. Deployment (`deploy.yml`)
+
 Triggered on push to `main` branch or version tags.
 
 **Steps:**
+
 - Builds and pushes Docker images to Docker Hub
 - Deploys to production server via SSH
 
 ### 3. PR Checks (`pr-checks.yml`)
+
 Automated checks for pull requests:
+
 - Validates package.json changes
 - Auto-labels PRs based on changed files
 - Checks PR size
@@ -34,6 +40,7 @@ Automated checks for pull requests:
 Add these secrets in your GitHub repository settings (Settings → Secrets and variables → Actions):
 
 #### For Deployment:
+
 - `DOCKER_USERNAME`: Your Docker Hub username
 - `DOCKER_PASSWORD`: Your Docker Hub password or access token
 - `DEPLOY_HOST`: Production server hostname or IP
@@ -41,6 +48,7 @@ Add these secrets in your GitHub repository settings (Settings → Secrets and v
 - `DEPLOY_KEY`: SSH private key for deployment
 
 #### For Code Quality (Optional):
+
 - `SONAR_TOKEN`: SonarCloud authentication token
 - `GITHUB_TOKEN`: Automatically provided by GitHub Actions
 
@@ -76,6 +84,7 @@ Check the status of workflows in the **Actions** tab of your GitHub repository.
 ### Branch Protection
 
 Recommended branch protection rules for `main`:
+
 - ✅ Require pull request reviews
 - ✅ Require status checks to pass (CI must pass)
 - ✅ Require branches to be up to date
@@ -85,8 +94,8 @@ Recommended branch protection rules for `main`:
 
 1. **Development**: Push to `frontend` or `develop` branch
    - CI runs tests and builds
-   
 2. **Pull Request**: Create PR to `main`
+
    - All PR checks run
    - Auto-labeling applied
    - Review and approval required
@@ -105,12 +114,14 @@ Recommended branch protection rules for `main`:
 ## Troubleshooting
 
 ### CI Failing?
+
 1. Check the Actions tab for detailed logs
 2. Ensure all secrets are properly configured
 3. Verify Docker Compose configuration
 4. Check database migration status
 
 ### Deployment Issues?
+
 1. Verify SSH credentials
 2. Check production server Docker installation
 3. Ensure firewall rules allow GitHub Actions IPs

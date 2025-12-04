@@ -110,11 +110,13 @@ results = ab_manager.get_test_results('button_color')
 ### REST API Endpoints
 
 #### Get Variant for User
+
 ```bash
 GET /api/ab-test/variant/{test_id}/{user_id}
 ```
 
 Response:
+
 ```json
 {
   "test_id": "button_color",
@@ -130,6 +132,7 @@ Response:
 ```
 
 #### Track Event
+
 ```bash
 POST /api/ab-test/track
 Content-Type: application/json
@@ -146,16 +149,19 @@ Content-Type: application/json
 ```
 
 #### Get Test Results
+
 ```bash
 GET /api/ab-test/results/{test_id}?detailed=true
 ```
 
 #### List All Tests
+
 ```bash
 GET /api/ab-test/tests
 ```
 
 #### Create New Test
+
 ```bash
 POST /api/ab-test/create
 Content-Type: application/json
@@ -209,24 +215,29 @@ python cli.py export <test_id> results.json
 The framework provides comprehensive statistical analysis:
 
 ### Z-Test
+
 - Tests for statistical significance between variants
 - Calculates p-value and confidence level
 - Computes lift percentage
 
 ### Chi-Square Test
+
 - Tests for independence between variants
 - Validates results with different statistical approach
 
 ### Bayesian Analysis
+
 - Calculates probability that variant is better than control
 - Uses Beta distribution
 - More intuitive interpretation than p-values
 
 ### Confidence Intervals
+
 - 95% confidence intervals for conversion rates
 - Helps visualize uncertainty in estimates
 
 ### Sample Size Calculator
+
 - Determines required sample size before starting test
 - Based on baseline rate and minimum detectable effect
 - Ensures adequate statistical power
@@ -247,22 +258,22 @@ const response = await fetch(`/api/ab-test/variant/button_color/${userId}`);
 const { variant } = await response.json();
 
 // Apply variant configuration
-if (variant.name === 'control') {
-  buttonColor = '#10b981';
+if (variant.name === "control") {
+  buttonColor = "#10b981";
 } else {
   buttonColor = variant.config.color;
 }
 
 // Track conversion
-await fetch('/api/ab-test/track', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+await fetch("/api/ab-test/track", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    test_id: 'button_color',
+    test_id: "button_color",
     user_id: userId,
-    event_name: 'conversion',
-    value: orderTotal
-  })
+    event_name: "conversion",
+    value: orderTotal,
+  }),
 });
 ```
 
@@ -279,15 +290,18 @@ await fetch('/api/ab-test/track', {
 ## Troubleshooting
 
 ### Tests not appearing
+
 - Check that start_date is in the past
 - Verify test is marked as active
 
 ### No statistical significance
+
 - Calculate required sample size
 - Run test longer to collect more data
 - Consider increasing minimum detectable effect
 
 ### Inconsistent results
+
 - Ensure user IDs are consistent
 - Check for sampling ratio mismatch
 - Verify events are being tracked correctly
@@ -299,6 +313,7 @@ The A/B testing module is fully integrated into the GitHub Actions CI/CD pipelin
 ### Automated Testing
 
 Every push and pull request triggers:
+
 - **flake8** - Syntax and style validation (PEP 8)
 - **pylint** - Code quality analysis
 - **Import tests** - Validates all modules can be imported

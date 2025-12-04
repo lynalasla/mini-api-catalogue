@@ -9,14 +9,6 @@ export const CartProvider = ({ children }) => {
   const { user } = useAuth();
   const API_URL = '/api';
 
-  useEffect(() => {
-    if (user) {
-      loadCart();
-    } else {
-      setCart([]);
-    }
-  }, [user]);
-
   const loadCart = async () => {
     try {
       const response = await axios.get(`${API_URL}/cart`, { withCredentials: true });
@@ -25,6 +17,15 @@ export const CartProvider = ({ children }) => {
       console.error('Failed to load cart:', error);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      loadCart();
+    } else {
+      setCart([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const addToCart = async (productId, quantity = 1) => {
     try {
@@ -92,4 +93,5 @@ export const CartProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => useContext(CartContext);

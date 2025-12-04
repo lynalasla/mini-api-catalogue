@@ -107,7 +107,7 @@ function ProductsSection({ showNotification, onLoginRequired, searchQuery }) {
       ) : null}
       <div className="products-grid">
         {filteredProducts.map(product => {
-          const rating = (Math.random() * 2 + 3).toFixed(1);
+          const _rating = (Math.random() * 2 + 3).toFixed(1);
           const reviews = Math.floor(Math.random() * 500) + 50;
           const stockClass = product.stock < 10 ? 'low' : '';
 
