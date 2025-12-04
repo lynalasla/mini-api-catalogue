@@ -162,18 +162,24 @@ jobs:
               with:
                   fetch-depth: 0
 
+            - name: Check SonarQube configuration
+              id: sonar-check
+              run: |
+                  if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+                    echo "enabled=false" >> $GITHUB_OUTPUT
+                    echo "⚠️ SonarQube scan skipped - SONAR_TOKEN not configured"
+                  else
+                    echo "enabled=true" >> $GITHUB_OUTPUT
+                  fi
+
             - name: SonarQube Scan
-              if: secrets.SONAR_TOKEN != ''
+              if: steps.sonar-check.outputs.enabled == 'true'
               uses: SonarSource/sonarqube-scan-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                   SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
               continue-on-error: true
-
-            - name: Skip SonarQube (no token)
-              if: secrets.SONAR_TOKEN == ''
-              run: echo "⚠️ SonarQube scan skipped - SONAR_TOKEN not configured"
 
     # Job 6: A/B Testing Python Tests
     ab-testing-tests:
