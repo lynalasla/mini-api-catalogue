@@ -155,7 +155,6 @@ jobs:
     code-quality:
         name: Code Quality Check
         runs-on: ubuntu-latest
-        if: vars.ENABLE_SONAR == 'true'
 
         steps:
             - name: Checkout code
