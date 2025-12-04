@@ -11,6 +11,7 @@ import productRouter from './routes/products.js';
 import authRoutes from './routes/auth.js';
 import cartRoutes from './routes/cart.js';
 import ordersRoutes from './routes/orders.js';
+import usersRoutes from './routes/users.js';
 
 // Initialisation de l'application Express
 const app = express();
@@ -50,12 +51,14 @@ app.get('/', (req, res) => {
  * - /api/products : Gestion des produits
  * - /api/cart : Gestion du panier
  * - /api/orders : Gestion des commandes
+ * - /api/users : Gestion des utilisateurs (admin)
  */
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/users', usersRoutes);
 
 // Définition du port d'écoute
 const PORT = process.env.PORT || 3000;

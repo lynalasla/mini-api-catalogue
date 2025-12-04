@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './TopBar.css';
 
-function TopBar({ onShowOrders }) {
+function TopBar() {
   const { user } = useAuth();
 
   return (
@@ -16,9 +17,9 @@ function TopBar({ onShowOrders }) {
         </div>
         <div className="top-bar-right">
           {user && (
-            <a href="#" onClick={(e) => { e.preventDefault(); onShowOrders(); }}>
+            <Link to="/orders">
               📦 My Orders
-            </a>
+            </Link>
           )}
         </div>
       </div>

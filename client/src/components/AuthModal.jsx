@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './AuthModal.css';
 
@@ -6,21 +7,32 @@ function AuthModal({ isOpen, onClose, mode, onSwitchToLogin, onSwitchToSignup })
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const { login, signup } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
+      let userData;
       if (mode === 'login') {
-        await login(formData.email, formData.password);
+        console.log('Attempting login with:', formData.email);
+        userData = await login(formData.email, formData.password);
+        console.log('Login successful:', userData);
       } else {
-        await signup(formData.name, formData.email, formData.password);
+        userData = await signup(formData.name, formData.email, formData.password);
       }
       setFormData({ name: '', email: '', password: '' });
       onClose();
+      
+      // Rediriger vers admin si l'utilisateur est admin
+      if (userData.user?.role === 'ADMIN') {
+        navigate('/admin');
+      }
     } catch (err) {
-      setError(err.response?.data?.error || `${mode === 'login' ? 'Login' : 'Signup'} failed`);
+      console.error('Auth error:', err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || `${mode === 'login' ? 'Login' : 'Signup'} failed`;
+      setError(errorMessage);
     }
   };
 

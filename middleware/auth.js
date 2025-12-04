@@ -37,6 +37,7 @@ export const requireAdmin = (req, res, next) => {
 export const generateToken = (user) => {
     return jwt.sign(
         { 
+            userId: user.id,
             id: user.id, 
             email: user.email, 
             role: user.role 

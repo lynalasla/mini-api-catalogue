@@ -1,3 +1,4 @@
+import image1 from '../assets/image1.png';
 import './HeroBanner.css';
 
 function HeroBanner() {
@@ -14,7 +15,7 @@ function HeroBanner() {
         </div>
         <div className="hero-image">
           <img 
-            src="https://i.imgur.com/9YvBXqZ.png" 
+            src={image1} 
             alt="Fashion Sale" 
           />
         </div>

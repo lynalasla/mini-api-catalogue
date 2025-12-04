@@ -14,6 +14,36 @@
   color: #1f2937;
 }
 
+.category-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.category-filter-btn {
+  padding: 8px 20px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.category-filter-btn:hover {
+  border-color: #ff6b00;
+  color: #ff6b00;
+}
+
+.category-filter-btn.active {
+  background: linear-gradient(135deg, #ff6b00, #ff8534);
+  color: white;
+  border-color: transparent;
+}
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -26,6 +56,12 @@
   overflow: hidden;
   transition: all 0.2s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .product-card:hover {

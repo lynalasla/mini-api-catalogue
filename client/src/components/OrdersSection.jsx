@@ -65,7 +65,7 @@ function OrdersSection({ onBack }) {
 
               <div className="order-total">
                 <span>Total:</span>
-                <span>${order.total.toFixed(2)}</span>
+                <span>${parseFloat(order.total).toFixed(2)}</span>
               </div>
             </div>
           ))

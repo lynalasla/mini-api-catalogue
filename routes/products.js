@@ -1,133 +1,189 @@
-/**
- * Module de gestion des routes pour les produits
- * Fournit les endpoints CRUD pour gérer les produits du catalogue avec MySQL
- */
-
-// Importation des modules nécessaires
 import express from 'express';
-import db from '../config/database.js';
+import prisma from '../config/prisma.js';
 
-// Création du router Express pour les produits
-const productRouter = express.Router();
+const router = express.Router();
 
 /**
- * GET /products
- * Récupère la liste complète de tous les produits
- * @returns {Array} Liste des produits au format JSON
+ * GET /api/products
+ * Récupère tous les produits
  */
-productRouter.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const [products] = await db.query(`
-      SELECT p.*, c.name as category_name 
-      FROM products p
-      LEFT JOIN categories c ON p.category_id = c.id
-    `);
-    res.json(products);
+    const products = await prisma.product.findMany({
+      include: {
+        category: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
+    
+    const formattedProducts = products.map(p => ({
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      price: p.price,
+      stock: p.stock,
+      image_url: p.imageUrl,
+      category_id: p.categoryId,
+      category_name: p.category?.name || null,
+      created_at: p.createdAt,
+      updated_at: p.updatedAt
+    }));
+    
+    res.json(formattedProducts);
   } catch (error) {
-    console.error('Erreur lors de la récupération des produits:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
 
 /**
- * POST /products
+ * POST /api/products
  * Crée un nouveau produit
- * @body {string} name - Le nom du produit
- * @body {number} price - Le prix du produit
- * @body {number} categoryId - L'ID de la catégorie du produit
- * @returns {Object} Le produit créé avec son ID généré
  */
-productRouter.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const { name, price, categoryId } = req.body;
+    const { name, description, price, category_id, image_url, stock } = req.body;
     
-    if (!name || !price) {
-      return res.status(400).json({ error: 'Le nom et le prix sont requis' });
+    if (!name || !price || !image_url) {
+      return res.status(400).json({ error: 'Name, price, and image_url are required' });
     }
     
-    const [result] = await db.query(
-      'INSERT INTO products (name, price, category_id) VALUES (?, ?, ?)',
-      [name, price, categoryId || null]
-    );
+    const newProduct = await prisma.product.create({
+      data: {
+        name,
+        description: description || null,
+        price: parseFloat(price),
+        categoryId: category_id ? parseInt(category_id) : null,
+        imageUrl: image_url,
+        stock: stock || 0
+      },
+      include: {
+        category: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
     
-    const newProduct = {
-      id: result.insertId,
-      name: name,
-      price: price,
-      categoryId: categoryId || null
+    const formattedProduct = {
+      id: newProduct.id,
+      name: newProduct.name,
+      description: newProduct.description,
+      price: newProduct.price,
+      stock: newProduct.stock,
+      image_url: newProduct.imageUrl,
+      category_id: newProduct.categoryId,
+      category_name: newProduct.category?.name || null,
+      created_at: newProduct.createdAt,
+      updated_at: newProduct.updatedAt
     };
     
-    res.status(201).json(newProduct);
+    res.status(201).json(formattedProduct);
   } catch (error) {
-    console.error('Erreur lors de la création du produit:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Error creating product:', error);
+    res.status(500).json({ error: 'Failed to create product' });
   }
 });
 
 /**
- * PUT /products/:id
- * Met à jour un produit existant
- * @param {number} id - L'ID du produit à modifier
- * @body {string} name - Le nouveau nom du produit
- * @body {number} price - Le nouveau prix du produit
- * @body {number} categoryId - Le nouvel ID de catégorie du produit
- * @returns {Object} Le produit mis à jour ou une erreur 404
+ * PUT /api/products/:id
+ * Met à jour un produit
  */
-productRouter.put('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, categoryId } = req.body;
+    const { name, description, price, category_id, image_url, stock } = req.body;
     
-    if (!name || !price) {
-      return res.status(400).json({ error: 'Le nom et le prix sont requis' });
-    }
-    
-    const [result] = await db.query(
-      'UPDATE products SET name = ?, price = ?, category_id = ? WHERE id = ?',
-      [name, price, categoryId || null, id]
-    );
-    
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-    
-    res.json({
-      id: parseInt(id),
-      name: name,
-      price: price,
-      categoryId: categoryId || null
+    const updatedProduct = await prisma.product.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        description: description || null,
+        price: parseFloat(price),
+        categoryId: category_id ? parseInt(category_id) : null,
+        imageUrl: image_url,
+        stock: stock !== undefined ? parseInt(stock) : undefined
+      },
+      include: {
+        category: {
+          select: {
+            name: true
+          }
+        }
+      }
     });
+    
+    const formattedProduct = {
+      id: updatedProduct.id,
+      name: updatedProduct.name,
+      description: updatedProduct.description,
+      price: updatedProduct.price,
+      stock: updatedProduct.stock,
+      image_url: updatedProduct.imageUrl,
+      category_id: updatedProduct.categoryId,
+      category_name: updatedProduct.category?.name || null,
+      created_at: updatedProduct.createdAt,
+      updated_at: updatedProduct.updatedAt
+    };
+    
+    res.json(formattedProduct);
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du produit:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Error updating product:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.status(500).json({ error: 'Failed to update product' });
   }
 });
 
 /**
- * DELETE /products/:id
- * Supprime un produit
- * @param {number} id - L'ID du produit à supprimer
- * @returns {Object} Message de confirmation ou erreur 404
+ * PATCH /api/products/:id/stock
+ * Met à jour le stock d'un produit
  */
-productRouter.delete('/:id', async (req, res) => {
+router.patch('/:id/stock', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { stock } = req.body;
+    
+    const updatedProduct = await prisma.product.update({
+      where: { id: parseInt(id) },
+      data: { stock: parseInt(stock) }
+    });
+    
+    res.json({ id: parseInt(id), stock: updatedProduct.stock });
+  } catch (error) {
+    console.error('Error updating stock:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.status(500).json({ error: 'Failed to update stock' });
+  }
+});
+
+/**
+ * DELETE /api/products/:id
+ * Supprime un produit
+ */
+router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    const [result] = await db.query(
-      'DELETE FROM products WHERE id = ?',
-      [id]
-    );
-    
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
+    await prisma.product.delete({
+      where: { id: parseInt(id) }
+    });
     
     res.json({ message: 'Product deleted' });
   } catch (error) {
-    console.error('Erreur lors de la suppression du produit:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Error deleting product:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 
-// Export du router pour utilisation dans server.js
-export default productRouter;
+export default router;

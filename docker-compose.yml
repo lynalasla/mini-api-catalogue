@@ -57,6 +57,22 @@ services:
       mysql:
         condition: service_healthy
 
+  react-dev:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: belibeli-react-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - mini-api-catalogue
+    restart: unless-stopped
+
   nginx:
     build:
       context: .
