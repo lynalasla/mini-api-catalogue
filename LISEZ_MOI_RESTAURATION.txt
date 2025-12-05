@@ -21,16 +21,19 @@ utilisateurs et commandes depuis un fichier Excel de backup.
   5. BACKUP_README.md               ← Documentation technique
   6. restore-helper.sh              ← Script interactif
 
-🚀 PROCÉDURE RAPIDE (3 MINUTES)
+🚀 PROCÉDURE RAPIDE (5 MINUTES)
 ────────────────────────────────
 
   1. Vérifier Docker
      $ docker-compose ps
 
-  2. Lister les backups
+  2. Appliquer le schéma Prisma (IMPORTANT!)
+     $ npx prisma db push
+
+  3. Lister les backups
      $ ls -lh backups/
 
-  3. Restaurer
+  4. Restaurer
      $ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 
   4. Noter les mots de passe affichés

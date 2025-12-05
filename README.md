@@ -32,6 +32,7 @@ npx prisma db push && npx prisma db seed
 ```
 
 **📊 Services accessibles :**
+
 - Frontend: http://localhost:5173
 - API: http://localhost:3000
 - phpMyAdmin: http://localhost:8080

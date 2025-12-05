@@ -8,13 +8,13 @@ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 
 ## 📚 Fichiers de Documentation
 
-| Fichier | Description | Pour qui ? |
-|---------|-------------|------------|
-| **GUIDE_COLLABORATEURS.md** | Guide complet de démarrage | 🆕 Nouveaux collaborateurs |
-| **BACKUP_README.md** | Documentation backup/restore | 👨‍💻 Tous |
-| **backups/README.md** | Guide du dossier backups | 👨‍💻 Tous |
-| **README.md** | Documentation principale | 📖 Référence générale |
-| **restore-helper.sh** | Script d'aide interactif | 🎯 Utilisation simplifiée |
+| Fichier                     | Description                  | Pour qui ?                 |
+| --------------------------- | ---------------------------- | -------------------------- |
+| **GUIDE_COLLABORATEURS.md** | Guide complet de démarrage   | 🆕 Nouveaux collaborateurs |
+| **BACKUP_README.md**        | Documentation backup/restore | 👨‍💻 Tous                    |
+| **backups/README.md**       | Guide du dossier backups     | 👨‍💻 Tous                    |
+| **README.md**               | Documentation principale     | 📖 Référence générale      |
+| **restore-helper.sh**       | Script d'aide interactif     | 🎯 Utilisation simplifiée  |
 
 ## 🔄 Processus Complet de Restauration
 
@@ -111,14 +111,43 @@ Après la restauration, vérifiez :
 
 ## ❌ Problèmes Courants et Solutions
 
-### Problème 1 : "Fichier non trouvé"
+### Problème 1 : "The column description does not exist"
 
 **Symptôme :**
+
+```
+Invalid prisma.category.upsert() invocation
+The column description does not exist in the current database.
+code: 'P2022'
+```
+
+**Cause :**
+Le schéma Prisma n'a pas été appliqué à la base de données.
+
+**Solution :**
+
+```bash
+# Appliquer le schéma Prisma
+npx prisma db push
+
+# Puis relancer la restauration
+node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+```
+
+**Important :** Cette étape doit TOUJOURS être faite avant la première restauration !
+
+---
+
+### Problème 2 : "Fichier non trouvé"
+
+**Symptôme :**
+
 ```
 ❌ Fichier non trouvé: backups/database_backup_2025-12-04T23-26-27.xlsx
 ```
 
 **Solution :**
+
 ```bash
 # Vérifier que vous êtes à la racine du projet
 pwd
@@ -134,11 +163,13 @@ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 ### Problème 2 : "Unknown argument `imageUrl`"
 
 **Symptôme :**
+
 ```
 Unknown argument `imageUrl`. Available options are marked with ?.
 ```
 
 **Solution :**
+
 ```bash
 # Vous utilisez probablement .js au lieu de .cjs
 # ✅ CORRECT
@@ -151,11 +182,13 @@ node restore-database.js backups/fichier.xlsx
 ### Problème 3 : "Cannot find module 'exceljs'"
 
 **Symptôme :**
+
 ```
 Error: Cannot find module 'exceljs'
 ```
 
 **Solution :**
+
 ```bash
 # Installer les dépendances manquantes
 npm install exceljs --save-dev
@@ -168,11 +201,13 @@ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 ### Problème 4 : "Cannot connect to database"
 
 **Symptôme :**
+
 ```
 Error: Can't reach database server
 ```
 
 **Solution :**
+
 ```bash
 # Vérifier que Docker est lancé
 docker-compose ps
@@ -188,6 +223,7 @@ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 ### Problème 5 : Base de données vide après restauration
 
 **Solution :**
+
 ```bash
 # Vérifier avec Prisma Studio
 npx prisma studio
@@ -227,6 +263,7 @@ npx prisma studio
 ### Contact
 
 Si le problème persiste après avoir suivi ce guide :
+
 1. Vérifiez les issues GitHub existantes
 2. Créez une nouvelle issue avec les logs d'erreur
 3. Contactez l'équipe sur le canal de communication
@@ -239,13 +276,4 @@ Si le problème persiste après avoir suivi ce guide :
 2. ✅ Toujours lancer depuis la racine du projet
 3. ✅ Toujours inclure `backups/` dans le chemin
 4. ✅ Toujours noter les mots de passe temporaires affichés
-5. ✅ Toujours vérifier que Docker est lancé avant
-
-**Commande magique :**
-```bash
-node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
-```
-
----
-
-**✨ Dernière mise à jour : 5 décembre 2025**
+5. ✅ Tou

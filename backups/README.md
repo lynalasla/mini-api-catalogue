@@ -34,16 +34,20 @@ node restore-database.cjs backups/NOM_DU_FICHIER.xlsx
 # 1. Se placer à la racine du projet
 cd mini-api-catalogue
 
-# 2. Lister les backups disponibles
+# 2. Appliquer le schéma Prisma (OBLIGATOIRE avant la première restauration)
+npx prisma db push
+
+# 3. Lister les backups disponibles
 ls -lh backups/
 
-# 3. Restaurer le backup le plus récent
+# 4. Restaurer le backup le plus récent
 node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 ```
 
 ## ✅ Ce qui se passe lors de la restauration
 
 La restauration va :
+
 1. ✅ Restaurer toutes les **catégories**
 2. ✅ Restaurer tous les **produits**
 3. ✅ Restaurer tous les **utilisateurs** avec mots de passe temporaires
@@ -74,6 +78,7 @@ La restauration va :
 ```
 
 **📝 Notes importantes :**
+
 - Les mots de passe sont **différents à chaque restauration**
 - Vous pouvez vous **connecter immédiatement** avec ces identifiants
 - Changez votre mot de passe après la première connexion
@@ -129,6 +134,7 @@ npm install bcryptjs
 ## 📚 Documentation complète
 
 Pour plus d'informations, consultez :
+
 - [BACKUP_README.md](../BACKUP_README.md) - Documentation complète du système de backup
 - [GUIDE_COLLABORATEURS.md](../GUIDE_COLLABORATEURS.md) - Guide de démarrage rapide
 - [README.md](../README.md) - Documentation principale du projet

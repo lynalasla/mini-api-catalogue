@@ -48,19 +48,23 @@ npx prisma db seed
 ```
 
 **✅ Résultat** :
+
 - 2 catégories (Electronics, Fashion)
 - 21 produits
 - 1 utilisateur admin : `admin@catalogue.com` / `admin123`
 
 ### Option B : Restaurer depuis un backup (données réelles)
 
-**⚠️ IMPORTANT : Utilisez cette commande exacte**
+**⚠️ IMPORTANT : Suivez ces étapes dans l'ordre**
 
 ```bash
-# 1. Vérifier les backups disponibles
+# 1. Appliquer le schéma Prisma (OBLIGATOIRE)
+npx prisma db push
+
+# 2. Vérifier les backups disponibles
 ls -lh backups/
 
-# 2. Restaurer depuis le backup le plus récent
+# 3. Restaurer depuis le backup le plus récent
 node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 ```
 
@@ -86,6 +90,7 @@ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 ```
 
 **📝 Notes** :
+
 - ✅ Des mots de passe temporaires sont générés automatiquement
 - 🔐 Vous pouvez vous connecter immédiatement avec ces identifiants
 - 🔄 Changez votre mot de passe après la première connexion
@@ -94,16 +99,16 @@ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 
 Une fois démarré, accédez à :
 
-| Service | URL | Identifiants |
-|---------|-----|--------------|
-| **Frontend React** | http://localhost:5173 | - |
-| **API Backend** | http://localhost:3000 | - |
-| **Nginx (Proxy)** | http://localhost:80 | - |
-| **phpMyAdmin** | http://localhost:8080 | user: `catalogue_user`<br>pass: `catalogue_password` |
-| **Grafana** | http://localhost:3001 | admin / admin |
-| **Prometheus** | http://localhost:9090 | - |
-| **Superset** | http://localhost:8088 | admin / admin |
-| **Prisma Studio** | http://localhost:5555 | Lancer: `npx prisma studio` |
+| Service            | URL                   | Identifiants                                         |
+| ------------------ | --------------------- | ---------------------------------------------------- |
+| **Frontend React** | http://localhost:5173 | -                                                    |
+| **API Backend**    | http://localhost:3000 | -                                                    |
+| **Nginx (Proxy)**  | http://localhost:80   | -                                                    |
+| **phpMyAdmin**     | http://localhost:8080 | user: `catalogue_user`<br>pass: `catalogue_password` |
+| **Grafana**        | http://localhost:3001 | admin / admin                                        |
+| **Prometheus**     | http://localhost:9090 | -                                                    |
+| **Superset**       | http://localhost:8088 | admin / admin                                        |
+| **Prisma Studio**  | http://localhost:5555 | Lancer: `npx prisma studio`                          |
 
 ## 🧪 Vérifier que tout fonctionne
 

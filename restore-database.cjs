@@ -21,6 +21,24 @@ async function restoreDatabase(filepath) {
         process.exit(1);
     }
 
+    // Vérifier que le schéma est appliqué
+    console.log('🔍 Vérification du schéma de la base de données...');
+    try {
+        // Test si la colonne description existe
+        await prisma.category.findFirst();
+    } catch (error) {
+        if (error.code === 'P2022' || error.message.includes('description')) {
+            console.error('\n❌ ERREUR: Le schéma Prisma n\'est pas appliqué à la base de données!');
+            console.error('\n📋 Veuillez exécuter cette commande AVANT la restauration:');
+            console.error('   npx prisma db push\n');
+            console.error('💡 Cette commande va créer/mettre à jour les tables dans la base de données.');
+            console.error('   Ensuite, relancez la restauration.\n');
+            process.exit(1);
+        }
+        // Autre erreur, continuer
+    }
+    console.log('✅ Schéma vérifié\n');
+
     try {
         // Lire le fichier Excel
         const workbook = new ExcelJS.Workbook();
