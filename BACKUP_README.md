@@ -34,6 +34,7 @@ node backup-database.js
 ```
 
 Le fichier sera créé dans le dossier `backups/` avec le format :
+
 ```
 database_backup_2025-12-05T00-30-00.xlsx
 ```
@@ -53,10 +54,12 @@ node restore-database.js backups/database_backup_2025-12-05T00-30-00.xlsx
 ## ⚙️ Configuration requise
 
 Les packages suivants sont nécessaires :
+
 - `xlsx` - Pour la génération/lecture de fichiers Excel
 - `@prisma/client` - Pour l'accès à la base de données
 
 Installation :
+
 ```bash
 npm install xlsx --save-dev
 ```
@@ -64,6 +67,7 @@ npm install xlsx --save-dev
 ## 🔒 Sécurité
 
 **Important** :
+
 - Les mots de passe des utilisateurs **ne sont pas exportés** pour des raisons de sécurité
 - Lors d'une restauration, les utilisateurs devront **réinitialiser leur mot de passe**
 - Les fichiers Excel de backup contiennent des données sensibles - **ne pas les partager**
@@ -74,6 +78,7 @@ npm install xlsx --save-dev
 ### Sauvegarde automatique quotidienne
 
 Ajoutez à votre crontab (Linux/Mac) :
+
 ```bash
 0 2 * * * cd /path/to/mini-api-catalogue && npm run backup
 ```
@@ -98,21 +103,27 @@ npm run restore backups/database_backup_XXXX.xlsx
 Chaque onglet contient :
 
 **Users**
+
 - id, email, name, role, created_at, updated_at
 
 **Categories**
+
 - id, name, description, created_at, updated_at
 
 **Products**
+
 - id, name, description, price, stock, image_url, category_id, category_name, created_at, updated_at
 
 **Orders**
+
 - id, user_id, user_email, user_name, total, status, created_at, updated_at
 
 **OrderItems**
+
 - id, order_id, product_id, product_name, quantity, price
 
 **CartItems**
+
 - id, user_id, user_email, product_id, product_name, product_price, quantity, created_at
 
 ## 🛠️ Dépannage
@@ -120,6 +131,7 @@ Chaque onglet contient :
 ### Erreur de connexion à la base de données
 
 Vérifiez que :
+
 - Docker containers sont en cours d'exécution : `docker-compose ps`
 - La variable `DATABASE_URL` est correctement configurée
 - MySQL est accessible sur le port 3306
@@ -127,6 +139,7 @@ Vérifiez que :
 ### Fichier Excel non trouvé
 
 Utilisez le chemin complet :
+
 ```bash
 node restore-database.js C:/Users/dell/mini-api-catalogue/backups/database_backup_XXXX.xlsx
 ```
@@ -150,6 +163,7 @@ node restore-database.js C:/Users/dell/mini-api-catalogue/backups/database_backu
 ### Script PowerShell (Windows)
 
 Créez `backup-daily.ps1` :
+
 ```powershell
 cd C:\Users\dell\mini-api-catalogue
 npm run backup
@@ -159,6 +173,7 @@ Copy-Item backups\*.xlsx "D:\Backups\Database\" -Force
 ### Script Bash (Linux/Mac)
 
 Créez `backup-daily.sh` :
+
 ```bash
 #!/bin/bash
 cd /path/to/mini-api-catalogue

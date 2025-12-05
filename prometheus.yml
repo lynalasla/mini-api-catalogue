@@ -1,0 +1,68 @@
+# Prometheus Configuration for Mini API Catalogue
+# Scrape configuration for monitoring services
+
+global:
+  scrape_interval: 15s      # Scrape metrics every 15 seconds
+  evaluation_interval: 15s  # Evaluate rules every 15 seconds
+  external_labels:
+    monitor: 'mini-api-catalogue'
+    environment: 'production'
+
+# Alerting configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Rule files (optional)
+rule_files:
+  # - "alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          environment: 'production'
+
+  # Node.js API Backend
+  - job_name: 'api-backend'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['mini-api-catalogue:3000']
+        labels:
+          service: 'api'
+          application: 'mini-api-catalogue'
+          environment: 'production'
+    metrics_path: '/metrics'
+
+  # MySQL Database Exporter (requires mysqld_exporter)
+  - job_name: 'mysql'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['mysql:3306']
+        labels:
+          service: 'database'
+          db_type: 'mysql'
+          environment: 'production'
+
+  # Docker Container Metrics (requires cAdvisor)
+  - job_name: 'docker'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          service: 'docker'
+          environment: 'production'
+
+  # Grafana self-monitoring
+  - job_name: 'grafana'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['grafana-catalogue:3000']
+        labels:
+          service: 'grafana'
+          environment: 'production'

@@ -31,21 +31,25 @@ Avant de commencer une récupération, assurez-vous d'avoir :
 ## 🎯 Scénarios de récupération
 
 ### Scénario 1 : Perte totale du système
+
 **Symptômes** : Machine reformatée, disque dur défaillant, perte complète des fichiers
 
 **Solution** : [Récupération complète](#récupération-complète)
 
 ### Scénario 2 : Base de données corrompue
+
 **Symptômes** : Erreurs Prisma, données incohérentes, tables manquantes
 
 **Solution** : [Récupération de la base de données](#récupération-de-la-base-de-données)
 
 ### Scénario 3 : Conteneurs Docker non fonctionnels
+
 **Symptômes** : `docker-compose ps` montre des conteneurs Exit ou Unhealthy
 
 **Solution** : [Récupération après crash Docker](#récupération-après-crash-docker)
 
 ### Scénario 4 : Code perdu mais base de données intacte
+
 **Symptômes** : Repository supprimé localement, mais Docker MySQL fonctionne
 
 **Solution** : [Récupération des conteneurs](#récupération-des-conteneurs)
@@ -346,6 +350,7 @@ docker exec belibeli-nginx nginx -t
 ### Erreur : "Cannot connect to MySQL"
 
 **Solution 1** : Attendre que MySQL soit prêt
+
 ```bash
 # Attendre 30 secondes
 sleep 30
@@ -353,12 +358,14 @@ docker logs mysql-catalogue
 ```
 
 **Solution 2** : Vérifier les credentials
+
 ```bash
 # Dans .env, vérifier :
 DATABASE_URL="mysql://catalogue_user:catalogue_password@localhost:3306/catalogue"
 ```
 
 **Solution 3** : Recréer la base de données
+
 ```bash
 docker exec -it mysql-catalogue mysql -u root -proot_password
 CREATE DATABASE IF NOT EXISTS catalogue;
@@ -515,6 +522,7 @@ python -c "from ab_test import ABTestManager; print('✅ A/B Testing OK')"
 Créer un script de backup automatique :
 
 **Windows (Task Scheduler)**
+
 ```powershell
 # backup-daily.ps1
 cd C:\Users\dell\mini-api-catalogue
@@ -523,6 +531,7 @@ Copy-Item backups\*.xlsx D:\Backups\Database\ -Force
 ```
 
 **Linux/Mac (Crontab)**
+
 ```bash
 # Ajouter dans crontab -e
 0 2 * * * cd /path/to/mini-api-catalogue && npm run backup
@@ -554,14 +563,17 @@ docker-compose up -d
 ## 📞 Contacts d'urgence
 
 **GitHub Repository**
+
 - https://github.com/lynalasla/mini-api-catalogue
 
 **Documentation**
+
 - `README.md` - Installation et utilisation
 - `BACKUP_README.md` - Backup et restauration
 - `API_DOCUMENTATION.md` - Documentation API
 
 **Commandes utiles**
+
 ```bash
 # Voir tous les logs
 docker-compose logs -f
@@ -620,12 +632,12 @@ curl http://localhost:3000/api/products
 
 ## 📈 Temps de récupération estimés
 
-| Scénario | Temps estimé | Complexité |
-|----------|--------------|------------|
-| Redémarrage simple | 2-5 min | ⭐ Facile |
-| Reconstruction Docker | 5-10 min | ⭐⭐ Moyen |
-| Récupération complète | 10-20 min | ⭐⭐⭐ Avancé |
-| Restauration + Backup | 15-30 min | ⭐⭐⭐⭐ Expert |
+| Scénario              | Temps estimé | Complexité      |
+| --------------------- | ------------ | --------------- |
+| Redémarrage simple    | 2-5 min      | ⭐ Facile       |
+| Reconstruction Docker | 5-10 min     | ⭐⭐ Moyen      |
+| Récupération complète | 10-20 min    | ⭐⭐⭐ Avancé   |
+| Restauration + Backup | 15-30 min    | ⭐⭐⭐⭐ Expert |
 
 ---
 

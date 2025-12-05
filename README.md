@@ -14,6 +14,7 @@
 ### 🎯 Vue d'ensemble
 
 Cette application propose une solution complète pour :
+
 - **Gestion de catalogue** : Produits, catégories, inventaire en temps réel
 - **Espace client** : Authentification, panier, commandes, profil utilisateur
 - **Administration** : Dashboard admin, gestion des produits et commandes
@@ -24,35 +25,42 @@ Cette application propose une solution complète pour :
 ### 🏗️ Architecture technique
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    NGINX (Port 80)                          │
-│              Reverse Proxy & Load Balancer                  │
-└────────────┬─────────────────────────────────┬──────────────┘
-             │                                 │
-    ┌────────▼────────┐              ┌────────▼────────┐
-    │  React Frontend │              │   API Backend   │
-    │   (Port 5173)   │              │   (Port 3000)   │
-    │  Vite + React   │              │  Express + JWT  │
-    └────────┬────────┘              └────────┬────────┘
-             │                                 │
-             │         ┌───────────────────────┼─────────┐
-             │         │                       │         │
-    ┌────────▼─────────▼──────┐    ┌──────────▼────┐   │
-    │   MySQL Database        │    │ Prisma ORM    │   │
-    │     (Port 3306)         │    │   Client      │   │
-    │  + phpMyAdmin (8080)    │    └───────────────┘   │
-    └─────────────────────────┘                        │
-                                              ┌─────────▼────────┐
-                                              │  A/B Testing API  │
-                                              │   Python Flask    │
-                                              │   (Port 5001)     │
-                                              └───────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                       NGINX (Port 80)                               │
+│                 Reverse Proxy & Load Balancer                       │
+└────────────┬──────────────────────────────────┬─────────────────────┘
+             │                                  │
+    ┌────────▼────────┐               ┌────────▼────────┐
+    │  React Frontend │               │   API Backend   │
+    │   (Port 5173)   │               │   (Port 3000)   │
+    │  Vite + React   │               │  Express + JWT  │
+    └────────┬────────┘               └────────┬────────┘
+             │                                  │
+             │         ┌────────────────────────┼──────────────┐
+             │         │                        │              │
+    ┌────────▼─────────▼──────┐     ┌──────────▼────┐    ┌───▼─────────┐
+    │   MySQL Database        │     │ Prisma ORM    │    │  Prometheus  │
+    │     (Port 3306)         │     │   Client      │    │  (Port 9090) │
+    │  + phpMyAdmin (8080)    │     └───────────────┘    └───┬─────────┘
+    └─────────────────────────┘                              │
+                                                   ┌──────────▼──────────┐
+                                                   │      Grafana        │
+                                                   │    (Port 3001)      │
+                                    ┌──────────────┤  Dashboards & Charts│
+                                    │              └─────────────────────┘
+                          ┌─────────▼────────┐
+                          │  A/B Testing API  │
+                          │   Python Flask    │
+                          │   (Port 5001)     │
+                          └───────────────────┘
 ```
 
 ### ✨ Fonctionnalités principales
 
 #### 🛒 **Côté client (E-Commerce)**
+
 - **Catalogue produits**
+
   - Navigation par catégories avec filtres avancés
   - Recherche en temps réel avec suggestions
   - Affichage grille/liste avec images optimisées
@@ -60,18 +68,21 @@ Cette application propose une solution complète pour :
   - Stock en temps réel et indicateurs de disponibilité
 
 - **Système de panier**
+
   - Ajout/retrait de produits avec animations
   - Calcul automatique des totaux et taxes
   - Persistance du panier (authentifié/local storage)
   - Validation du stock avant commande
 
 - **Gestion des commandes**
+
   - Historique des commandes avec statuts
   - Suivi en temps réel des livraisons
   - Détails de facturation et livraison
   - Notifications par email (à venir)
 
 - **Authentification & Profil**
+
   - Inscription/connexion sécurisée (JWT)
   - Profil utilisateur modifiable
   - Gestion des adresses de livraison
@@ -84,19 +95,23 @@ Cette application propose une solution complète pour :
   - Notifications toast pour les actions
 
 #### 👨‍💼 **Côté administrateur**
+
 - **Dashboard analytique**
+
   - Statistiques des ventes en temps réel
   - Graphiques de performance
   - Top produits et catégories
   - Indicateurs KPI (CA, commandes, clients)
 
 - **Gestion des produits**
+
   - CRUD complet (Create, Read, Update, Delete)
   - Upload d'images multiples
   - Gestion du stock et prix
   - Import/export Excel
 
 - **Gestion des commandes**
+
   - Tableau de bord des commandes
   - Mise à jour des statuts
   - Impression des bons de commande
@@ -108,12 +123,15 @@ Cette application propose une solution complète pour :
   - Gestion des rôles (admin/user)
 
 #### 🔬 **Module A/B Testing**
+
 - **Expérimentation produits**
+
   - Tests A/B/n multivariés
   - Segmentation des utilisateurs
   - Attribution automatique des variants
 
 - **Analyse statistique**
+
   - Tests Z (taux de conversion)
   - Tests Chi-carré (distribution)
   - Analyse Bayésienne (probabilités)
@@ -127,13 +145,16 @@ Cette application propose une solution complète pour :
   - Export des résultats
 
 #### 💾 **Système de backup**
+
 - **Sauvegarde automatique**
+
   - Export Excel de toutes les tables
   - Formatage professionnel (en-têtes, largeurs)
   - Noms de fichiers horodatés
   - Compression et archivage
 
 - **Restauration**
+
   - Import depuis fichiers Excel
   - Validation des données
   - Gestion des conflits (upsert)
@@ -145,9 +166,28 @@ Cette application propose une solution complète pour :
   npm run restore  # Restaurer depuis Excel
   ```
 
+#### 📊 **Monitoring & Observabilité (Grafana)**
+- **Dashboards en temps réel**
+  - E-Commerce Overview : Métriques business (produits, commandes, utilisateurs, catégories)
+  - API Performance : Latence, taux de requêtes, statuts HTTP, Event Loop
+  - Graphiques interactifs avec historique
+
+- **Métriques collectées**
+  - **Business** : Nombre de produits, commandes, utilisateurs, catégories
+  - **Performance** : Temps de réponse (p50, p95, p99), requêtes/seconde
+  - **Système** : CPU, mémoire, connexions actives, Garbage Collection
+  - **HTTP** : Statuts (2xx, 4xx, 5xx), endpoints les plus sollicités
+
+- **Prometheus + Grafana**
+  - Scraping automatique toutes les 15 secondes
+  - Rétention des données sur 15 jours
+  - Alertes configurables (optionnel)
+  - Accès : http://localhost:3001 (admin/admin)
+
 ### 🛠️ Stack technologique détaillée
 
 #### **Backend (API Node.js)**
+
 - **Framework** : Express.js 4.19
 - **ORM** : Prisma 5.19.1 (MySQL)
 - **Authentification** : JWT (jsonwebtoken 9.0.2)
@@ -158,6 +198,7 @@ Cette application propose une solution complète pour :
 - **Dev** : nodemon 3.1.7
 
 #### **Frontend (React)**
+
 - **Framework** : React 18.3
 - **Build** : Vite 5.4
 - **Routing** : React Router v6
@@ -168,6 +209,7 @@ Cette application propose une solution complète pour :
 - **Notifications** : React Toastify
 
 #### **Base de données**
+
 - **SGBD** : MySQL 8.0
 - **ORM** : Prisma (type-safe)
 - **Admin** : phpMyAdmin 5.2
@@ -175,6 +217,7 @@ Cette application propose une solution complète pour :
 - **Seeding** : Scripts automatiques
 
 #### **A/B Testing (Python)**
+
 - **Framework** : Flask 3.0
 - **Stats** : NumPy 1.26+, SciPy 1.11+
 - **API** : Flask-CORS
@@ -182,8 +225,13 @@ Cette application propose une solution complète pour :
 - **Code quality** : flake8, pylint (10/10)
 
 #### **DevOps & Infrastructure**
-- **Conteneurisation** : Docker 24+, Docker Compose
+
+- **Conteneurisation** : Docker 24+, Docker Compose (7 services)
 - **Reverse Proxy** : Nginx 1.27-alpine
+- **Monitoring & Observability** :
+  - Prometheus : Collecte de métriques (scraping 15s)
+  - Grafana : Dashboards & visualisations
+  - prom-client : Exposition métriques Node.js
 - **CI/CD** : GitHub Actions (6 jobs)
   - Tests backend (Jest)
   - Tests frontend (Vitest)
@@ -191,10 +239,10 @@ Cette application propose une solution complète pour :
   - Security scan (npm audit, CodeQL)
   - Code quality (ESLint, flake8, pylint)
   - A/B Testing tests (pytest)
-- **Monitoring** : Docker healthchecks
 - **Logs** : Docker logs centralisés
 
 #### **Sécurité**
+
 - **Vulnérabilités** : 0 (npm audit clean ✅)
 - **JWT** : Tokens sécurisés avec expiration
 - **Passwords** : Hashing bcrypt (10 rounds)
@@ -277,6 +325,7 @@ model CartItem {
 ### 🎨 Captures d'écran
 
 #### Page d'accueil
+
 - Hero banner avec appel à l'action
 - Catégories rapides avec icônes
 - Ventes flash avec compte à rebours
@@ -284,6 +333,7 @@ model CartItem {
 - Boutiques best-sellers
 
 #### Page produit
+
 - Galerie d'images zoomable
 - Informations détaillées
 - Boutons d'action (panier, favori)
@@ -291,6 +341,7 @@ model CartItem {
 - Avis clients (à venir)
 
 #### Dashboard admin
+
 - Graphiques interactifs
 - Tableaux de données
 - Actions rapides
@@ -298,7 +349,7 @@ model CartItem {
 
 ### 📦 Structure du projet
 
-```
+````
 mini-api-catalogue/
 ├── 📁 Backend (Node.js + Express)
 │   ├── server.js              # Point d'entrée principal
@@ -374,7 +425,7 @@ mini-api-catalogue/
 
 ---
 
-## ��� Installation rapide sur un nouveau PC
+## ��� Installation rapide sur un nouveau PC
 
 ### Prérequis système
 
@@ -395,7 +446,7 @@ cd mini-api-catalogue
 
 # Basculer sur la branche frontend (version complète)
 git checkout frontend
-```
+````
 
 ### Étape 2 : Configuration de l'environnement
 
@@ -417,7 +468,7 @@ CLIENT_PORT=5173
 ENVEOF
 ```
 
-**��� Sur Windows, créez manuellement le fichier `.env` avec le contenu ci-dessus**
+**��� Sur Windows, créez manuellement le fichier `.env` avec le contenu ci-dessus**
 
 ### Étape 3 : Installer les dépendances
 
@@ -451,6 +502,7 @@ docker-compose ps
 ```
 
 **Résultat attendu** :
+
 ```
 NAME                    STATUS
 mysql-catalogue         Up (healthy)
@@ -503,13 +555,13 @@ npx prisma studio
 curl http://localhost:3000/api/products
 
 # Tester le Frontend (ouvrir dans le navigateur)
-# ��� http://localhost:5173
+# ��� http://localhost:5173
 
 # Tester Nginx (reverse proxy)
-# ��� http://localhost:80
+# ��� http://localhost:80
 
 # Tester phpMyAdmin (gestion base de données)
-# ��� http://localhost:8080
+# ��� http://localhost:8080
 # Utilisateur: catalogue_user
 # Mot de passe: catalogue_password
 
@@ -529,7 +581,7 @@ npm run backup
 
 ---
 
-## ��� Checklist d'installation complète
+## ��� Checklist d'installation complète
 
 Cochez chaque étape pour vous assurer que tout fonctionne :
 
@@ -549,7 +601,7 @@ Cochez chaque étape pour vous assurer que tout fonctionne :
 
 ---
 
-## ��� Commandes utiles quotidiennes
+## ��� Commandes utiles quotidiennes
 
 ### Démarrage / Arrêt
 
@@ -621,35 +673,135 @@ npm update
 
 ---
 
-## ��� Accès aux services
+## ��� Accès aux services
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Frontend** | http://localhost:5173 | Interface utilisateur React |
-| **API Backend** | http://localhost:3000 | API REST Express |
-| **Nginx** | http://localhost:80 | Reverse proxy (production) |
-| **phpMyAdmin** | http://localhost:8080 | Interface MySQL |
-| **Prisma Studio** | http://localhost:5555 | ORM GUI (après `npx prisma studio`) |
-| **A/B Testing API** | http://localhost:5001 | API Flask Python |
+| Service             | URL                   | Description                         |
+| ------------------- | --------------------- | ----------------------------------- |
+| **Frontend**        | http://localhost:5173 | Interface utilisateur React         |
+| **API Backend**     | http://localhost:3000 | API REST Express                    |
+| **Nginx**           | http://localhost:80   | Reverse proxy (production)          |
+| **phpMyAdmin**      | http://localhost:8080 | Interface MySQL                     |
+| **Prisma Studio**   | http://localhost:5555 | ORM GUI (après `npx prisma studio`) |
+| **A/B Testing API** | http://localhost:5001 | API Flask Python                    |
+| **Grafana** 📊      | http://localhost:3001 | Dashboards & Monitoring             |
+| **Prometheus**      | http://localhost:9090 | Métriques & Time-series DB          |
 
 ### Comptes par défaut
 
 **Utilisateur Admin** (après seed)
+
 - Email : `admin@example.com`
 - Mot de passe : `admin123`
 
 **Utilisateur Normal** (après seed)
+
 - Email : `user@example.com`
 - Mot de passe : `user123`
 
 **phpMyAdmin**
+
 - Utilisateur : `catalogue_user`
 - Mot de passe : `catalogue_password`
 - Base de données : `catalogue`
 
+**Grafana** 📊
+
+- Utilisateur : `admin`
+- Mot de passe : `admin`
+- Dashboards : E-Commerce Overview, API Performance (chargés automatiquement)
+
 ---
 
-## ��� Dépannage rapide
+## 📊 Utilisation de Grafana
+
+### Accéder aux dashboards
+
+1. **Ouvrir Grafana** : http://localhost:3001
+2. **Se connecter** : admin / admin (changez le mot de passe lors de la première connexion)
+3. **Accéder aux dashboards** :
+   - Menu latéral → Dashboards
+   - Ou directement : http://localhost:3001/dashboards
+
+### Dashboards disponibles
+
+#### 📈 E-Commerce Overview
+**Vue d'ensemble business en temps réel**
+
+Métriques affichées :
+- **Compteurs** : Total produits, commandes, utilisateurs, catégories
+- **Taux de requêtes** : Graphique des requêtes/seconde par endpoint
+- **Temps de réponse** : p95 des temps de réponse par route
+- **Tableau d'endpoints** : Statistiques détaillées par route (Method, Status, Req/s)
+
+**Utilisation** :
+- Surveillance des KPIs business
+- Détection des pics de trafic
+- Analyse des endpoints les plus utilisés
+
+#### ⚡ API Performance
+**Métriques techniques et performance système**
+
+Métriques affichées :
+- **Gauges** : CPU Usage, Memory Usage, Active Connections, Event Loop Lag
+- **Percentiles** : Temps de réponse (p50, p95, p99) par route
+- **Status HTTP** : Répartition 2xx (succès), 4xx (erreur client), 5xx (erreur serveur)
+- **Mémoire détaillée** : Resident Memory, Heap Used, External Memory
+- **Garbage Collection** : Fréquence et type de GC
+
+**Utilisation** :
+- Détection des goulots d'étranglement
+- Optimisation des performances
+- Surveillance de la santé système
+
+### Personnaliser les dashboards
+
+```bash
+# Les dashboards sont en JSON dans :
+grafana/dashboards/ecommerce-overview.json
+grafana/dashboards/api-performance.json
+
+# Modifier un dashboard :
+1. Ouvrir Grafana → Dashboard → Edit
+2. Faire vos modifications
+3. Save → Export to JSON
+4. Remplacer le fichier dans grafana/dashboards/
+5. Redémarrer : docker-compose restart grafana
+```
+
+### Créer des alertes (optionnel)
+
+```yaml
+# Exemple d'alerte dans prometheus.yml
+groups:
+  - name: api_alerts
+    rules:
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, http_request_duration_seconds_bucket) > 1
+        for: 5m
+        annotations:
+          summary: "API response time too high"
+      
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status_code=~"5.."}[5m]) > 0.05
+        for: 2m
+        annotations:
+          summary: "High rate of 5xx errors"
+```
+
+### Exporter les dashboards
+
+```bash
+# Depuis Grafana UI
+Dashboard → Share → Export → Save to file
+
+# Ou via API
+curl -H "Authorization: Bearer <token>" \
+  http://localhost:3001/api/dashboards/uid/ecommerce-overview
+```
+
+---
+
+## ��� Dépannage rapide
 
 ### Problème : "Port already in use"
 
@@ -698,11 +850,11 @@ docker-compose build --no-cache
 docker-compose up -d
 ```
 
-**��� Pour plus de solutions** : Consultez `RECOVERY.md`
+**��� Pour plus de solutions** : Consultez `RECOVERY.md`
 
 ---
 
-## ��� Documentation complémentaire
+## ��� Documentation complémentaire
 
 - **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Documentation complète de l'API REST
 - **[BACKUP_README.md](BACKUP_README.md)** - Guide détaillé backup/restore
@@ -711,7 +863,7 @@ docker-compose up -d
 
 ---
 
-## ��� Contribution
+## ��� Contribution
 
 Les contributions sont les bienvenues ! Pour contribuer :
 
@@ -723,18 +875,19 @@ Les contributions sont les bienvenues ! Pour contribuer :
 
 ---
 
-## ��� Licence
+## ��� Licence
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ---
 
-## ���‍��� Auteur
+## ���‍��� Auteur
 
 **Lyna Lasla**
+
 - GitHub : [@lynalasla](https://github.com/lynalasla)
 - Repository : [mini-api-catalogue](https://github.com/lynalasla/mini-api-catalogue)
 
 ---
 
-**��� Bon développement avec Mini API Catalogue !**
+**��� Bon développement avec Mini API Catalogue !**
