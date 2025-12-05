@@ -8,6 +8,7 @@ const ExcelJS = require('exceljs');
 const { PrismaClient } = require('@prisma/client');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
@@ -66,45 +67,48 @@ async function restoreDatabase(filepath) {
             
             productsSheet.eachRow((row, rowNumber) => {
                 if (rowNumber > 1) {
+                    const imageUrl = row.getCell(6).value;
                     products.push({
                         id: row.getCell(1).value,
                         name: row.getCell(2).value,
                         description: row.getCell(3).value,
-                        price: row.getCell(4).value,
-                        stock: row.getCell(5).value,
-                        imageUrl: row.getCell(6).value,
-                        categoryId: row.getCell(7).value
+                        price: parseFloat(row.getCell(4).value) || 0,
+                        stock: parseInt(row.getCell(5).value) || 0,
+                        imageUrl: imageUrl || undefined,
+                        categoryId: parseInt(row.getCell(7).value)
                     });
                 }
             });
             
             for (const prod of products) {
+                const productData = {
+                    name: prod.name,
+                    description: prod.description,
+                    price: prod.price,
+                    stock: prod.stock,
+                    categoryId: prod.categoryId
+                };
+                
+                // Only add imageUrl if it exists
+                if (prod.imageUrl) {
+                    productData.imageUrl = prod.imageUrl;
+                }
+                
                 await prisma.product.upsert({
                     where: { id: prod.id },
-                    update: {
-                        name: prod.name,
-                        description: prod.description,
-                        price: prod.price,
-                        stock: prod.stock,
-                        imageUrl: prod.imageUrl,
-                        categoryId: prod.categoryId
-                    },
+                    update: productData,
                     create: {
                         id: prod.id,
-                        name: prod.name,
-                        description: prod.description,
-                        price: prod.price,
-                        stock: prod.stock,
-                        imageUrl: prod.imageUrl,
-                        categoryId: prod.categoryId
+                        ...productData
                     }
                 });
             }
             console.log(`✅ ${products.length} produits restaurés`);
         }
 
-        // 3. Restaurer les utilisateurs (sans les mots de passe)
+        // 3. Restaurer les utilisateurs avec mots de passe temporaires
         const usersSheet = workbook.getWorksheet('Users');
+        const restoredUsers = [];
         if (usersSheet) {
             console.log('📊 Restauration des utilisateurs...');
             const users = [];
@@ -121,10 +125,13 @@ async function restoreDatabase(filepath) {
                 }
             });
             
-            console.log('⚠️  Note: Les mots de passe ne sont pas restaurés pour des raisons de sécurité');
-            console.log('   Les utilisateurs devront réinitialiser leur mot de passe');
+            console.log('🔑 Génération de mots de passe temporaires...');
             
             for (const user of users) {
+                // Générer un mot de passe temporaire
+                const tempPassword = `Temp${Math.random().toString(36).slice(-8)}!`;
+                const hashedPassword = await bcrypt.hash(tempPassword, 10);
+                
                 // Vérifier si l'utilisateur existe déjà
                 const existing = await prisma.user.findUnique({
                     where: { id: user.id }
@@ -137,13 +144,26 @@ async function restoreDatabase(filepath) {
                             email: user.email,
                             firstName: user.firstName,
                             lastName: user.lastName,
-                            password: 'RESET_PASSWORD_REQUIRED',
+                            password: hashedPassword,
                             role: user.role || 'USER'
                         }
                     });
+                } else {
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            password: hashedPassword
+                        }
+                    });
                 }
+                
+                restoredUsers.push({
+                    email: user.email,
+                    password: tempPassword,
+                    role: user.role
+                });
             }
-            console.log(`✅ ${users.length} utilisateurs traités`);
+            console.log(`✅ ${users.length} utilisateurs restaurés`);
         }
 
         // 4. Restaurer les commandes
@@ -155,10 +175,10 @@ async function restoreDatabase(filepath) {
             ordersSheet.eachRow((row, rowNumber) => {
                 if (rowNumber > 1) {
                     orders.push({
-                        id: row.getCell(1).value,
-                        userId: row.getCell(2).value,
-                        total: row.getCell(6).value,
-                        status: row.getCell(7).value
+                        id: parseInt(row.getCell(1).value),
+                        userId: parseInt(row.getCell(2).value),
+                        total: parseFloat(row.getCell(6).value) || 0,
+                        status: row.getCell(7).value || 'PENDING'
                     });
                 }
             });
@@ -167,7 +187,6 @@ async function restoreDatabase(filepath) {
                 await prisma.order.upsert({
                     where: { id: order.id },
                     update: {
-                        userId: order.userId,
                         total: order.total,
                         status: order.status
                     },
@@ -222,7 +241,19 @@ async function restoreDatabase(filepath) {
         }
 
         console.log('\n✅ Restauration terminée avec succès!');
-        console.log('⚠️  N\'oubliez pas de demander aux utilisateurs de réinitialiser leurs mots de passe');
+        
+        if (restoredUsers.length > 0) {
+            console.log('\n📋 INFORMATIONS DE CONNEXION:');
+            console.log('═'.repeat(60));
+            restoredUsers.forEach(user => {
+                console.log(`\n👤 ${user.role === 'ADMIN' ? '🔐 ADMIN' : 'USER'}`);
+                console.log(`   Email:    ${user.email}`);
+                console.log(`   Password: ${user.password}`);
+            });
+            console.log('\n' + '═'.repeat(60));
+            console.log('⚠️  IMPORTANT: Conservez ces mots de passe temporaires!');
+            console.log('💡  Les utilisateurs peuvent les changer après connexion.');
+        }
 
     } catch (error) {
         console.error('❌ Erreur lors de la restauration:', error);
