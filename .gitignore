@@ -3,6 +3,4 @@
 test_operations/__pycache__/
 ab_testing/__pycache__/
 
-# Database backups
-backups/
-*.xlsx
+
