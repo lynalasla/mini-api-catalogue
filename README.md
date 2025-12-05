@@ -167,12 +167,15 @@ Cette application propose une solution complète pour :
   ```
 
 #### 📊 **Monitoring & Observabilité (Grafana)**
+
 - **Dashboards en temps réel**
+
   - E-Commerce Overview : Métriques business (produits, commandes, utilisateurs, catégories)
   - API Performance : Latence, taux de requêtes, statuts HTTP, Event Loop
   - Graphiques interactifs avec historique
 
 - **Métriques collectées**
+
   - **Business** : Nombre de produits, commandes, utilisateurs, catégories
   - **Performance** : Temps de réponse (p50, p95, p99), requêtes/seconde
   - **Système** : CPU, mémoire, connexions actives, Garbage Collection
@@ -725,23 +728,28 @@ npm update
 ### Dashboards disponibles
 
 #### 📈 E-Commerce Overview
+
 **Vue d'ensemble business en temps réel**
 
 Métriques affichées :
+
 - **Compteurs** : Total produits, commandes, utilisateurs, catégories
 - **Taux de requêtes** : Graphique des requêtes/seconde par endpoint
 - **Temps de réponse** : p95 des temps de réponse par route
 - **Tableau d'endpoints** : Statistiques détaillées par route (Method, Status, Req/s)
 
 **Utilisation** :
+
 - Surveillance des KPIs business
 - Détection des pics de trafic
 - Analyse des endpoints les plus utilisés
 
 #### ⚡ API Performance
+
 **Métriques techniques et performance système**
 
 Métriques affichées :
+
 - **Gauges** : CPU Usage, Memory Usage, Active Connections, Event Loop Lag
 - **Percentiles** : Temps de réponse (p50, p95, p99) par route
 - **Status HTTP** : Répartition 2xx (succès), 4xx (erreur client), 5xx (erreur serveur)
@@ -749,6 +757,7 @@ Métriques affichées :
 - **Garbage Collection** : Fréquence et type de GC
 
 **Utilisation** :
+
 - Détection des goulots d'étranglement
 - Optimisation des performances
 - Surveillance de la santé système
@@ -780,7 +789,7 @@ groups:
         for: 5m
         annotations:
           summary: "API response time too high"
-      
+
       - alert: HighErrorRate
         expr: rate(http_requests_total{status_code=~"5.."}[5m]) > 0.05
         for: 2m

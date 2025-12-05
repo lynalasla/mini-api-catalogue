@@ -107,19 +107,37 @@ services:
       - "3001:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
       - GF_SERVER_ROOT_URL=http://localhost:3001
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/ecommerce-overview.json
     restart: unless-stopped
     depends_on:
       - prometheus
+
+  superset:
+    image: apache/superset:latest
+    container_name: superset-catalogue
+    ports:
+      - "8088:8088"
+    environment:
+      - SUPERSET_SECRET_KEY=votre_cle_secrete_changez_moi
+      - SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
+    volumes:
+      - superset_data:/app/superset_home
+      - ./superset_config.py:/app/pythonpath/superset_config.py
+    command: >
+      sh -c "superset db upgrade &&
+             superset fab create-admin --username admin --firstname Admin --lastname User --email admin@superset.com --password admin &&
+             superset init &&
+             superset run -h 0.0.0.0 -p 8088 --with-threads --reload"
+    restart: unless-stopped
+    depends_on:
+      - mysql
 
 volumes:
   mysql_data:
   prometheus_data:
   grafana_data:
+  superset_data:

@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -72,19 +72,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "products_count",
           "refId": "A"
         }
       ],
-      "title": "📦 Total Products",
+      "title": "Total Products",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -132,19 +132,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "orders_count",
           "refId": "A"
         }
       ],
-      "title": "🛒 Total Orders",
+      "title": "Total Orders",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -192,19 +192,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "users_count",
           "refId": "A"
         }
       ],
-      "title": "👥 Total Users",
+      "title": "Total Users",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -252,19 +252,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "categories_count",
           "refId": "A"
         }
       ],
-      "title": "📂 Total Categories",
+      "title": "Total Categories",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -343,20 +343,20 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "rate(http_requests_total[5m])",
           "legendFormat": "{{method}} {{route}}",
           "refId": "A"
         }
       ],
-      "title": "📊 Request Rate (req/s)",
+      "title": "Request Rate (req/s)",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -443,20 +443,20 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, route))",
           "legendFormat": "{{route}} (p95)",
           "refId": "A"
         }
       ],
-      "title": "⚡ Response Time (p95)",
+      "title": "Response Time (p95)",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -507,7 +507,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "sum(rate(http_requests_total[5m])) by (method, route, status_code)",
           "format": "table",
@@ -515,7 +515,7 @@
           "refId": "A"
         }
       ],
-      "title": "📈 Endpoints Statistics",
+      "title": "Endpoints Statistics",
       "transformations": [
         {
           "id": "organize",
@@ -552,7 +552,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "📊 E-Commerce Overview",
+  "title": "E-Commerce Overview",
   "uid": "ecommerce-overview",
   "version": 0,
   "weekStart": ""

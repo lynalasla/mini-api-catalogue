@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -80,19 +80,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "100 - (avg(rate(process_cpu_seconds_total[5m])) * 100)",
           "refId": "A"
         }
       ],
-      "title": "🖥️ CPU Usage",
+      "title": "CPU Usage",
       "type": "gauge"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -148,19 +148,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "(process_resident_memory_bytes / process_virtual_memory_max_bytes) * 100",
           "refId": "A"
         }
       ],
-      "title": "💾 Memory Usage",
+      "title": "Memory Usage",
       "type": "gauge"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -208,19 +208,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "active_connections",
           "refId": "A"
         }
       ],
-      "title": "🔌 Active Connections",
+      "title": "Active Connections",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -276,19 +276,19 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "nodejs_eventloop_lag_mean_seconds * 1000",
           "refId": "A"
         }
       ],
-      "title": "⏱️ Event Loop Lag",
+      "title": "Event Loop Lag",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -368,7 +368,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, route))",
           "legendFormat": "{{route}} (p50)",
@@ -377,7 +377,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, route))",
           "legendFormat": "{{route}} (p95)",
@@ -386,20 +386,20 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, route))",
           "legendFormat": "{{route}} (p99)",
           "refId": "C"
         }
       ],
-      "title": "⚡ Response Time Percentiles",
+      "title": "Response Time Percentiles",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -523,20 +523,20 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "sum(rate(http_requests_total[5m])) by (status_code)",
           "legendFormat": "HTTP {{status_code}}",
           "refId": "A"
         }
       ],
-      "title": "📊 HTTP Status Codes",
+      "title": "HTTP Status Codes",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -615,7 +615,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "process_resident_memory_bytes",
           "legendFormat": "Resident Memory",
@@ -624,7 +624,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "nodejs_heap_size_used_bytes",
           "legendFormat": "Heap Used",
@@ -633,20 +633,20 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "nodejs_external_memory_bytes",
           "legendFormat": "External Memory",
           "refId": "C"
         }
       ],
-      "title": "💾 Memory Usage Details",
+      "title": "Memory Usage Details",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PROMETHEUS"
       },
       "fieldConfig": {
         "defaults": {
@@ -725,14 +725,14 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "PROMETHEUS"
           },
           "expr": "rate(nodejs_gc_duration_seconds_count[5m])",
           "legendFormat": "GC {{gc_type}}",
           "refId": "A"
         }
       ],
-      "title": "🗑️ Garbage Collection Rate",
+      "title": "Garbage Collection Rate",
       "type": "timeseries"
     }
   ],
@@ -752,7 +752,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "⚡ API Performance",
+  "title": "API Performance",
   "uid": "api-performance",
   "version": 0,
   "weekStart": ""
