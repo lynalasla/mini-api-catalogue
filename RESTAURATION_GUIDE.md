@@ -276,4 +276,14 @@ Si le problème persiste après avoir suivi ce guide :
 2. ✅ Toujours lancer depuis la racine du projet
 3. ✅ Toujours inclure `backups/` dans le chemin
 4. ✅ Toujours noter les mots de passe temporaires affichés
-5. ✅ Tou
+5. ✅ Toujours vérifier que Docker est lancé avant
+
+**Commande magique :**
+
+```bash
+node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+```
+
+---
+
+**✨ Dernière mise à jour : 5 décembre 2025**
