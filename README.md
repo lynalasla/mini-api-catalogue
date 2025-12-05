@@ -7,6 +7,38 @@
 
 > **Plateforme e-commerce moderne** avec API REST, interface React interactive, base de données MySQL, système de backup Excel, et module A/B Testing intégré.
 
+---
+
+## 🚀 Démarrage Rapide pour Collaborateurs
+
+**📌 Vous êtes nouveau sur le projet ? Consultez [GUIDE_COLLABORATEURS.md](GUIDE_COLLABORATEURS.md) pour une mise en route rapide !**
+
+**Commandes essentielles :**
+
+```bash
+# 1. Cloner et installer
+git clone https://github.com/lynalasla/mini-api-catalogue.git
+cd mini-api-catalogue
+npm install
+
+# 2. Démarrer l'application
+docker-compose up -d
+
+# 3. Restaurer les données (SI vous avez un backup)
+node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+
+# 4. OU utiliser les données de test
+npx prisma db push && npx prisma db seed
+```
+
+**📊 Services accessibles :**
+- Frontend: http://localhost:5173
+- API: http://localhost:3000
+- phpMyAdmin: http://localhost:8080
+- Grafana: http://localhost:3001
+
+---
+
 ## 📖 Description complète de l'application
 
 **Mini API Catalogue** est une application e-commerce full-stack complète, conçue pour la gestion de catalogues de produits avec une interface utilisateur moderne et des fonctionnalités avancées de tests A/B.
@@ -535,21 +567,50 @@ npm run prisma:seed
 Si vous avez un fichier de backup Excel provenant d'un ancien PC :
 
 ```bash
-# 1. Copier votre fichier de backup dans le dossier backups/
-# Exemple : backups/database_backup_2025-12-04T23-34-09.xlsx
+# 1. Vérifier les backups disponibles
+ls -lh backups/
 
-# 2. Lister les backups disponibles
-ls -la backups/
+# Exemple de sortie :
+# -rw-r--r-- 1 user user 30K Dec  5 00:26 database_backup_2025-12-04T23-26-27.xlsx
+# -rw-r--r-- 1 user user 13K Dec  5 00:34 database_backup_2025-12-04T23-34-09.xlsx
 
-# 3. Restaurer depuis le backup
-npm run restore backups/database_backup_2025-12-04T23-34-09.xlsx
+# 2. Restaurer depuis le backup le plus récent
+node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
 
-# 4. Vérifier la restauration
-npx prisma studio
-# Ouvrir http://localhost:5555 dans votre navigateur
+# ✅ La restauration va :
+#    - Restaurer toutes les catégories
+#    - Restaurer tous les produits
+#    - Restaurer tous les utilisateurs avec mots de passe temporaires
+#    - Restaurer toutes les commandes et articles
 ```
 
-**⚠️ Important** : Les mots de passe des utilisateurs ne sont pas restaurés pour des raisons de sécurité. Les utilisateurs devront réinitialiser leurs mots de passe.
+**Exemple de sortie après restauration réussie :**
+
+```
+✅ Restauration terminée avec succès!
+
+📋 INFORMATIONS DE CONNEXION:
+════════════════════════════════════════════════════════════
+
+👤 🔐 ADMIN
+   Email:    admin@catalogue.com
+   Password: Templ1cpdyb9!
+
+👤 USER
+   Email:    user@catalogue.com
+   Password: Tempq5n1ocrj!
+
+════════════════════════════════════════════════════════════
+⚠️  IMPORTANT: Conservez ces mots de passe temporaires!
+💡  Les utilisateurs peuvent les changer après connexion.
+```
+
+**📝 Notes importantes :**
+
+- ✅ **Mots de passe temporaires** générés automatiquement et affichés
+- 🔐 **Connexion immédiate** possible avec ces identifiants
+- 🔄 Les utilisateurs peuvent **changer leur mot de passe** après connexion
+- 📊 Vérifiez les données restaurées avec `npx prisma studio` (http://localhost:5555)
 
 ### Étape 7 : Vérifier l'installation
 
@@ -863,12 +924,22 @@ docker-compose up -d
 
 ---
 
-## ��� Documentation complémentaire
+## 📚 Documentation complémentaire
+
+### 🆕 Guides pour Collaborateurs
+
+- **[GUIDE_COLLABORATEURS.md](GUIDE_COLLABORATEURS.md)** - 🚀 **Guide de démarrage rapide** (à lire en premier !)
+- **[RESTAURATION_GUIDE.md](RESTAURATION_GUIDE.md)** - 📦 **Guide complet de restauration** (problèmes & solutions)
+- **[backups/README.md](backups/README.md)** - 📋 Guide du dossier backups
+
+### 📖 Documentation Technique
 
 - **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Documentation complète de l'API REST
 - **[BACKUP_README.md](BACKUP_README.md)** - Guide détaillé backup/restore
 - **[RECOVERY.md](RECOVERY.md)** - Procédures de récupération d'urgence
 - **[REACT_README.md](client/REACT_README.md)** - Documentation frontend React
+- **[GRAFANA_SETUP.md](GRAFANA_SETUP.md)** - Configuration Grafana & Prometheus
+- **[SUPERSET_SETUP.md](SUPERSET_SETUP.md)** - Configuration Apache Superset
 
 ---
 

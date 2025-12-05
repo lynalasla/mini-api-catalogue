@@ -41,15 +41,19 @@ database_backup_2025-12-05T00-30-00.xlsx
 
 ### Restaurer depuis une sauvegarde
 
-```bash
-npm run restore backups/database_backup_2025-12-05T00-30-00.xlsx
-```
-
-Ou directement :
+**Option 1 : Utiliser npm (recommandé mais ne fonctionne pas actuellement)**
 
 ```bash
-node restore-database.js backups/database_backup_2025-12-05T00-30-00.xlsx
+npm run restore backups/database_backup_2025-12-04T23-26-27.xlsx
 ```
+
+**Option 2 : Commande directe (À UTILISER)**
+
+```bash
+node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+```
+
+**⚠️ Important** : Utilisez toujours `restore-database.cjs` (pas `.js`)
 
 ## ⚙️ Configuration requise
 
@@ -69,7 +73,9 @@ npm install xlsx --save-dev
 **Important** :
 
 - Les mots de passe des utilisateurs **ne sont pas exportés** pour des raisons de sécurité
-- Lors d'une restauration, les utilisateurs devront **réinitialiser leur mot de passe**
+- Lors d'une restauration, des **mots de passe temporaires** sont générés automatiquement
+- Les identifiants temporaires sont **affichés à la fin** de la restauration
+- Les utilisateurs peuvent **se connecter immédiatement** et changer leur mot de passe
 - Les fichiers Excel de backup contiennent des données sensibles - **ne pas les partager**
 - Ajoutez `backups/` et `*.xlsx` dans `.gitignore`
 
@@ -95,7 +101,43 @@ npm run backup
 npm run prisma:migrate
 
 # En cas de problème, restaurer
-npm run restore backups/database_backup_XXXX.xlsx
+node restore-database.cjs backups/database_backup_XXXX.xlsx
+```
+
+### Exemple de sortie de restauration réussie
+
+```
+🔄 Démarrage de la restauration de la base de données...
+📁 Fichier: backups/database_backup_2025-12-04T23-26-27.xlsx
+
+📊 Restauration des catégories...
+✅ 2 catégories restaurées
+📊 Restauration des produits...
+✅ 21 produits restaurés
+📊 Restauration des utilisateurs...
+🔑 Génération de mots de passe temporaires...
+✅ 2 utilisateurs restaurés
+📊 Restauration des commandes...
+✅ 1 commandes restaurées
+📊 Restauration des articles de commande...
+✅ 1 articles de commande restaurés
+
+✅ Restauration terminée avec succès!
+
+📋 INFORMATIONS DE CONNEXION:
+════════════════════════════════════════════════════════════
+
+👤 🔐 ADMIN
+   Email:    admin@catalogue.com
+   Password: Templ1cpdyb9!
+
+👤 USER
+   Email:    user@catalogue.com
+   Password: Tempq5n1ocrj!
+
+════════════════════════════════════════════════════════════
+⚠️  IMPORTANT: Conservez ces mots de passe temporaires!
+💡  Les utilisateurs peuvent les changer après connexion.
 ```
 
 ## 📂 Structure du fichier Excel

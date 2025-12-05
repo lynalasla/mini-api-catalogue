@@ -12,7 +12,8 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "node prisma/seed.js",
     "backup": "node backup-database.cjs",
-    "restore": "node restore-database.cjs"
+    "restore": "node restore-database.cjs",
+    "help:restore": "echo 'Usage: node restore-database.cjs backups/fichier.xlsx'"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

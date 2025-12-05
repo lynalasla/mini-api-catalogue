@@ -1,0 +1,105 @@
+📦 RESTAURATION BASE DE DONNÉES - RÉSUMÉ POUR LES COLLABORATEURS
+═══════════════════════════════════════════════════════════════
+
+🎯 OBJECTIF
+───────────
+Restaurer la base de données avec tous les produits, catégories, 
+utilisateurs et commandes depuis un fichier Excel de backup.
+
+✅ COMMANDE À RETENIR
+──────────────────────
+
+  node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+
+📋 GUIDES DISPONIBLES (PAR ORDRE D'UTILITÉ)
+────────────────────────────────────────────
+
+  1. AIDE_MEMOIRE_RESTAURATION.txt  ← COMMENCEZ ICI (aide rapide)
+  2. GUIDE_COLLABORATEURS.md        ← Guide complet démarrage
+  3. RESTAURATION_GUIDE.md          ← Solutions aux problèmes
+  4. backups/README.md              ← Infos sur les backups
+  5. BACKUP_README.md               ← Documentation technique
+  6. restore-helper.sh              ← Script interactif
+
+🚀 PROCÉDURE RAPIDE (3 MINUTES)
+────────────────────────────────
+
+  1. Vérifier Docker
+     $ docker-compose ps
+
+  2. Lister les backups
+     $ ls -lh backups/
+
+  3. Restaurer
+     $ node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+
+  4. Noter les mots de passe affichés
+
+  5. Se connecter sur http://localhost:5173
+
+✨ CE QUI EST RESTAURÉ
+───────────────────────
+
+  ✅ 2 catégories (Electronics, Fashion)
+  ✅ 21 produits avec images et prix
+  ✅ 2 utilisateurs avec mots de passe temporaires
+  ✅ 1 commande avec articles
+  ✅ Toutes les relations entre les données
+
+🔑 IDENTIFIANTS APRÈS RESTAURATION
+────────────────────────────────────
+
+  Le script affiche automatiquement :
+  
+    Admin : admin@catalogue.com / [mot de passe temporaire]
+    User  : user@catalogue.com  / [mot de passe temporaire]
+  
+  ⚠️ Ces mots de passe sont DIFFÉRENTS à chaque restauration
+  ⚠️ Notez-les immédiatement !
+
+📝 NOTES IMPORTANTES
+─────────────────────
+
+  • Utilisez restore-database.CJS (pas .js)
+  • Lancez depuis la racine du projet
+  • Incluez "backups/" dans le chemin
+  • Docker doit être démarré
+  • Les mots de passe sont temporaires
+
+❌ ERREURS FRÉQUENTES
+──────────────────────
+
+  "Fichier non trouvé"
+    → Vous n'êtes pas à la racine du projet
+    → Solution : cd mini-api-catalogue
+
+  "Unknown argument imageUrl"
+    → Vous utilisez .js au lieu de .cjs
+    → Solution : node restore-database.cjs (pas .js)
+
+  "Cannot find module exceljs"
+    → Dépendances manquantes
+    → Solution : npm install exceljs --save-dev
+
+  "Cannot connect to database"
+    → Docker n'est pas démarré
+    → Solution : docker-compose up -d && sleep 30
+
+🆘 BESOIN D'AIDE ?
+───────────────────
+
+  1. Consultez RESTAURATION_GUIDE.md (solutions détaillées)
+  2. Utilisez ./restore-helper.sh (script interactif)
+  3. Vérifiez les logs : docker logs mini-api-catalogue
+  4. Ouvrez une issue GitHub
+
+📊 VÉRIFICATION POST-RESTAURATION
+───────────────────────────────────
+
+  $ curl http://localhost:3000/api/products    # API fonctionne ?
+  $ npx prisma studio                          # Voir les données
+  # Ouvrir http://localhost:5173                Frontend fonctionne ?
+
+═══════════════════════════════════════════════════════════════
+Dernière mise à jour : 5 décembre 2025
+═══════════════════════════════════════════════════════════════
