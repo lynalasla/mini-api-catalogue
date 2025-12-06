@@ -1,10 +1,9 @@
 /**
  * Script pour télécharger toutes les images externes localement
- * Version Node.js (pas besoin de jq)
+ * Version Node.js avec curl (plus fiable)
  */
 
-const https = require('https');
-const http = require('http');
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
@@ -18,40 +17,28 @@ if (!fs.existsSync(imagesDir)) {
     console.log('📁 Dossier créé:', imagesDir);
 }
 
-// Fonction pour télécharger une image
+// Fonction pour télécharger une image avec curl
 function downloadImage(url, filepath) {
-    return new Promise((resolve, reject) => {
-        const client = url.startsWith('https') ? https : http;
+    try {
+        execSync(`curl -s -o "${filepath}" "${url}"`, { timeout: 30000 });
         
-        const file = fs.createWriteStream(filepath);
-        
-        client.get(url, (response) => {
-            if (response.statusCode === 200) {
-                response.pipe(file);
-                file.on('finish', () => {
-                    file.close();
-                    resolve(true);
-                });
-            } else if (response.statusCode === 301 || response.statusCode === 302) {
-                // Suivre la redirection
-                file.close();
-                fs.unlinkSync(filepath);
-                downloadImage(response.headers.location, filepath)
-                    .then(resolve)
-                    .catch(reject);
+        // Vérifier que le fichier existe et n'est pas vide
+        if (fs.existsSync(filepath)) {
+            const stats = fs.statSync(filepath);
+            if (stats.size > 0) {
+                return true;
             } else {
-                file.close();
                 fs.unlinkSync(filepath);
-                reject(new Error(`Status code: ${response.statusCode}`));
+                return false;
             }
-        }).on('error', (err) => {
-            file.close();
-            if (fs.existsSync(filepath)) {
-                fs.unlinkSync(filepath);
-            }
-            reject(err);
-        });
-    });
+        }
+        return false;
+    } catch (error) {
+        if (fs.existsSync(filepath)) {
+            fs.unlinkSync(filepath);
+        }
+        return false;
+    }
 }
 
 async function downloadAllImages() {
@@ -116,8 +103,9 @@ async function downloadAllImages() {
             }
 
             // Télécharger
-            try {
-                await downloadImage(product.imageUrl, filepath);
+            const success = downloadImage(product.imageUrl, filepath);
+            
+            if (success) {
                 console.log(`  ✅ Téléchargé: ${filename}`);
                 
                 // Vérifier la taille du fichier
@@ -125,14 +113,14 @@ async function downloadAllImages() {
                 console.log(`     Taille: ${(stats.size / 1024).toFixed(2)} KB\n`);
                 
                 downloaded++;
-            } catch (error) {
-                console.error(`  ❌ Erreur: ${error.message}`);
+            } else {
+                console.error(`  ❌ Échec du téléchargement`);
                 console.error(`     URL: ${product.imageUrl}\n`);
                 errors++;
             }
 
             // Petit délai pour ne pas surcharger
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
 
         console.log('================================================');
