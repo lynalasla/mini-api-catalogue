@@ -1,19 +1,22 @@
-��� INDEX DE LA DOCUMENTATION - MINI API CATALOGUE
+��� INDEX DE LA DOCUMENTATION - MINI API CATALOGUE
 ═══════════════════════════════════════════════════════════════
 
-��� POUR LES NOUVEAUX COLLABORATEURS (COMMENCEZ ICI !)
+📖 POUR LES NOUVEAUX COLLABORATEURS (COMMENCEZ ICI !)
 ──────────────────────────────────────────────────────
 
-  1. LISEZ_MOI_RESTAURATION.txt      ← COMMENCEZ PAR CELUI-CI
+  1. AUTO_SETUP_FEATURES.md           ← NOUVEAU ! Tout ce qui est automatique
+     Liste des fonctionnalités pré-configurées (dashboards, images, etc.)
+
+  2. GUIDE_COLLABORATEURS.md          ← Guide de démarrage complet
+     Installation + restauration en 10 minutes
+
+  3. LISEZ_MOI_RESTAURATION.txt       
      Résumé ultra-rapide de la restauration
 
-  2. AIDE_MEMOIRE_RESTAURATION.txt   
+  4. AIDE_MEMOIRE_RESTAURATION.txt   
      Aide-mémoire visuel avec encadrés
 
-  3. GUIDE_COLLABORATEURS.md          
-     Guide complet de démarrage (installation + restauration)
-
-��� RESTAURATION DES DONNÉES
+��� RESTAURATION DES DONNÉES
 ───────────────────────────
 
   • RESTAURATION_GUIDE.md            
@@ -28,7 +31,7 @@
   • restore-database.cjs              
     Script Node.js de restauration (le fichier à utiliser)
 
-��� DOCUMENTATION PRINCIPALE
+��� DOCUMENTATION PRINCIPALE
 ───────────────────────────
 
   • README.md                         
@@ -43,7 +46,7 @@
   • RECOVERY.md                       
     Procédures de récupération d'urgence
 
-��� DOCUMENTATION FRONTEND
+��� DOCUMENTATION FRONTEND
 ─────────────────────────
 
   • client/README.md                  
@@ -55,7 +58,7 @@
   • client/ROUTER.md                  
     Documentation du routing
 
-��� MONITORING & ANALYTICS
+📊 MONITORING & ANALYTICS
 ─────────────────────────
 
   • GRAFANA_SETUP.md                  
@@ -64,10 +67,16 @@
   • GRAFANA_VERIFICATION.md           
     Vérification et troubleshooting Grafana
 
+  • verify-grafana-dashboards.sh      ✨ NOUVEAU !
+    Script de vérification automatique des dashboards
+
   • SUPERSET_SETUP.md                 
     Configuration Apache Superset
 
-��� TESTS A/B
+  ⭐ IMPORTANT: Les dashboards Grafana sont maintenant automatiquement
+    provisionnés ! Voir AUTO_SETUP_FEATURES.md
+
+��� TESTS A/B
 ────────────
 
   • ab_testing/README.md              
@@ -81,7 +90,7 @@
 
 ═══════════════════════════════════════════════════════════════
 
-��� PARCOURS RECOMMANDÉ POUR UN NOUVEAU COLLABORATEUR
+��� PARCOURS RECOMMANDÉ POUR UN NOUVEAU COLLABORATEUR
 ─────────────────────────────────────────────────────
 
   Jour 1 : Installation
