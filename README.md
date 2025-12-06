@@ -25,10 +25,11 @@ npm install
 docker-compose up -d
 
 # 3. Restaurer les données (SI vous avez un backup)
+npx prisma db push
 node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+node update-image-urls.cjs
 
-# 4. OU utiliser les données de test
-npx prisma db push && npx prisma db seed
+
 ```
 
 **📊 Services accessibles :**
