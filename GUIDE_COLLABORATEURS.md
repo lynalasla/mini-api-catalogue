@@ -105,10 +105,23 @@ Une fois démarré, accédez à :
 | **API Backend**    | http://localhost:3000 | -                                                    |
 | **Nginx (Proxy)**  | http://localhost:80   | -                                                    |
 | **phpMyAdmin**     | http://localhost:8080 | user: `catalogue_user`<br>pass: `catalogue_password` |
-| **Grafana**        | http://localhost:3001 | admin / admin                                        |
+| **Grafana** 📊     | http://localhost:3001 | admin / admin<br>**✨ Dashboards automatiques !**    |
 | **Prometheus**     | http://localhost:9090 | -                                                    |
 | **Superset**       | http://localhost:8088 | admin / admin                                        |
 | **Prisma Studio**  | http://localhost:5555 | Lancer: `npx prisma studio`                          |
+
+### 📊 Dashboards Grafana
+
+Les dashboards sont **automatiquement provisionnés** au démarrage :
+
+1. Accédez à http://localhost:3001
+2. Connectez-vous : `admin` / `admin`
+3. Allez dans **Dashboards** → Dossier **E-Commerce**
+4. Deux dashboards sont disponibles :
+   - **E-Commerce Overview** : Métriques business (produits, commandes, utilisateurs)
+   - **API Performance** : Métriques techniques (CPU, mémoire, latence)
+
+**✅ Aucune configuration requise !** Les dashboards sont prêts à l'emploi.
 
 ## 🧪 Vérifier que tout fonctionne
 

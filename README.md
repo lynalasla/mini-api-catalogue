@@ -780,13 +780,22 @@ npm update
 
 ## 📊 Utilisation de Grafana
 
-### Accéder aux dashboards
+### ✨ Dashboards Automatiquement Provisionnés
+
+**Les dashboards sont automatiquement chargés au démarrage de Grafana !**
 
 1. **Ouvrir Grafana** : http://localhost:3001
-2. **Se connecter** : admin / admin (changez le mot de passe lors de la première connexion)
+2. **Se connecter** : admin / admin
 3. **Accéder aux dashboards** :
-   - Menu latéral → Dashboards
-   - Ou directement : http://localhost:3001/dashboards
+   - Menu latéral → **Dashboards** → Dossier **E-Commerce**
+   - Les 2 dashboards sont déjà disponibles, aucune configuration requise !
+
+**Vérification rapide** :
+
+```bash
+# Vérifier que les dashboards sont chargés
+bash verify-grafana-dashboards.sh
+```
 
 ### Dashboards disponibles
 
