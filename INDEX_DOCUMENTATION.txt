@@ -67,14 +67,22 @@
   • GRAFANA_VERIFICATION.md           
     Vérification et troubleshooting Grafana
 
-  • verify-grafana-dashboards.sh      ✨ NOUVEAU !
-    Script de vérification automatique des dashboards
+  • GRAFANA_NO_DATA_FIX.md            🆘 NOUVEAU - Solution "No Data"
+    Guide résolution rapide problème dashboards vides
+
+  • verify-grafana-dashboards.sh      ✨ Script vérification dashboards
+    Vérifie que les dashboards sont bien provisionnés
+
+  • diagnose-grafana.sh               🔍 NOUVEAU - Diagnostic complet
+    Diagnostic automatique des métriques Grafana
 
   • SUPERSET_SETUP.md                 
     Configuration Apache Superset
 
   ⭐ IMPORTANT: Les dashboards Grafana sont maintenant automatiquement
     provisionnés ! Voir AUTO_SETUP_FEATURES.md
+  
+  ⚠️  PROBLÈME "NO DATA": Si dashboards vides → GRAFANA_NO_DATA_FIX.md
 
 ��� TESTS A/B
 ────────────
