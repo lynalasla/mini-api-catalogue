@@ -138,6 +138,59 @@ services:
     depends_on:
       - mysql
 
+  metrics-init:
+    image: curlimages/curl:latest
+    container_name: metrics-init-catalogue
+    depends_on:
+      - mini-api-catalogue
+      - grafana
+      - prometheus
+    command: >
+      sh -c "
+      echo '🚀 Initialisation des métriques Grafana...' &&
+      echo '' &&
+      echo '⏳ Attente du démarrage de l API (max 60s)...' &&
+      for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do
+        if curl -sf http://mini-api-catalogue:3000/health > /dev/null 2>&1; then
+          echo '✅ API prête!' &&
+          break
+        fi
+        echo \"   Tentative $$i/30...\" &&
+        sleep 2
+      done &&
+      echo '' &&
+      sleep 5 &&
+      echo '📊 Génération de données initiales pour Grafana...' &&
+      for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do
+        curl -s http://mini-api-catalogue:3000/api/products > /dev/null 2>&1 &
+        curl -s http://mini-api-catalogue:3000/api/categories > /dev/null 2>&1 &
+        curl -s http://mini-api-catalogue:3000/api/orders > /dev/null 2>&1 &
+        if [ $$((i % 10)) -eq 0 ]; then
+          echo \"   📤 $$i/30 requêtes envoyées...\"
+        fi
+        sleep 0.5
+      done &&
+      wait &&
+      echo '' &&
+      echo '✅ Initialisation terminée!' &&
+      echo '' &&
+      echo '📊 Vérification métriques:' &&
+      curl -s http://mini-api-catalogue:3000/metrics | grep -E '^(products_count|orders_count|users_count|categories_count)' &&
+      echo '' &&
+      echo '🌐 Services disponibles:' &&
+      echo '   - Grafana: http://localhost:3001 (admin/admin)' &&
+      echo '   - API: http://localhost:3000' &&
+      echo '   - Frontend: http://localhost:5173' &&
+      echo '' &&
+      echo '💡 Conseil: Dans Grafana, utilisez Last 5 minutes comme plage de temps' &&
+      echo '' &&
+      echo '✨ Les dashboards ont maintenant des données!' &&
+      sleep infinity
+      "
+    restart: "no"
+    networks:
+      - default
+
 volumes:
   mysql_data:
   prometheus_data:
