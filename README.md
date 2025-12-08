@@ -1052,13 +1052,16 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ---
 
-## ���‍��� Auteur
+## ���‍��� Auteurs
 
 **Lyna Lasla**
 
 - GitHub : [@lynalasla](https://github.com/lynalasla)
 - Repository : [mini-api-catalogue](https://github.com/lynalasla/mini-api-catalogue)
 
+**Christh Mampassi**
+- GitHub : [@lChristh2022](https://github.com/christh2022)
+- Repository : [mini-api-catalogue](https://github.com/lynalasla/mini-api-catalogue)
 ---
 
 **��� Bon développement avec Mini API Catalogue !**
