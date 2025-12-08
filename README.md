@@ -27,6 +27,8 @@ docker-compose up -d
 # 3. Restaurer les données (SI vous avez un backup)
 npx prisma db push
 node restore-database.cjs backups/database_backup_2025-12-08T22-21-33.xlsx
+
+# si image ne s'affiche pas
 node update-image-urls.cjs
 
 
