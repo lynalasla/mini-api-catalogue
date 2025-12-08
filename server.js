@@ -6,7 +6,6 @@
 // Importation des modules nécessaires
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import promClient from 'prom-client';
 import categoriesRoutes from './routes/categories.js';
 import productRouter from './routes/products.js';
 import authRoutes from './routes/auth.js';
@@ -15,113 +14,22 @@ import ordersRoutes from './routes/orders.js';
 import usersRoutes from './routes/users.js';
 import analyticsRoutes from './routes/analytics.js';
 import prisma from './config/prisma.js';
+import { 
+  register,
+  productsGauge,
+  ordersGauge,
+  usersGauge,
+  categoriesGauge,
+  ordersTotalValue,
+  averageOrderValue,
+  lowStockProducts,
+  revenueToday,
+  activeUsers
+} from './config/metrics/prometheus.js';
+import { metricsMiddleware } from './config/metrics/middleware.js';
 
 // Initialisation de l'application Express
 const app = express();
-
-// ============ PROMETHEUS METRICS CONFIGURATION ============
-const register = new promClient.Registry();
-
-// Default metrics (CPU, Memory, Event Loop, etc.)
-promClient.collectDefaultMetrics({ register });
-
-// Custom metrics
-const httpRequestDuration = new promClient.Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'status_code'],
-  buckets: [0.1, 0.5, 1, 2, 5]
-});
-
-const httpRequestTotal = new promClient.Counter({
-  name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status_code']
-});
-
-const activeConnections = new promClient.Gauge({
-  name: 'active_connections',
-  help: 'Number of active connections'
-});
-
-const dbQueryDuration = new promClient.Histogram({
-  name: 'db_query_duration_seconds',
-  help: 'Duration of database queries in seconds',
-  labelNames: ['operation', 'table'],
-  buckets: [0.01, 0.05, 0.1, 0.5, 1]
-});
-
-// Business metrics
-const ordersTotal = new promClient.Counter({
-  name: 'orders_total',
-  help: 'Total number of orders placed',
-  labelNames: ['status']
-});
-
-const orderRevenue = new promClient.Counter({
-  name: 'order_revenue_total',
-  help: 'Total revenue from orders',
-  labelNames: ['currency']
-});
-
-const productsViewed = new promClient.Counter({
-  name: 'products_viewed_total',
-  help: 'Total number of product views',
-  labelNames: ['product_id', 'category']
-});
-
-const cartOperations = new promClient.Counter({
-  name: 'cart_operations_total',
-  help: 'Total number of cart operations',
-  labelNames: ['operation'] // add, remove, clear
-});
-
-// Business metrics (gauges created once)
-const productsGauge = new promClient.Gauge({
-  name: 'products_count',
-  help: 'Total number of products in catalog'
-});
-
-const ordersGauge = new promClient.Gauge({
-  name: 'orders_count',
-  help: 'Total number of orders'
-});
-
-const usersGauge = new promClient.Gauge({
-  name: 'users_count',
-  help: 'Total number of registered users'
-});
-
-const categoriesGauge = new promClient.Gauge({
-  name: 'categories_count',
-  help: 'Total number of categories'
-});
-
-// Register all custom metrics
-register.registerMetric(httpRequestDuration);
-register.registerMetric(httpRequestTotal);
-register.registerMetric(activeConnections);
-register.registerMetric(dbQueryDuration);
-register.registerMetric(ordersTotal);
-register.registerMetric(orderRevenue);
-register.registerMetric(productsViewed);
-register.registerMetric(cartOperations);
-register.registerMetric(productsGauge);
-register.registerMetric(ordersGauge);
-register.registerMetric(usersGauge);
-register.registerMetric(categoriesGauge);
-
-// Expose metrics for Prometheus
-export { 
-  httpRequestDuration, 
-  httpRequestTotal, 
-  activeConnections, 
-  dbQueryDuration,
-  ordersTotal,
-  orderRevenue,
-  productsViewed,
-  cartOperations
-};
 
 // CORS pour le client React
 app.use((req, res, next) => {
@@ -142,22 +50,8 @@ app.use(cookieParser());
 // Servir les fichiers statiques (HTML, CSS, JS)
 app.use(express.static('public'));
 
-// Middleware to track request metrics
-app.use((req, res, next) => {
-  const start = Date.now();
-  activeConnections.inc();
-
-  res.on('finish', () => {
-    const duration = (Date.now() - start) / 1000;
-    const route = req.route ? req.route.path : req.path;
-    
-    httpRequestDuration.labels(req.method, route, res.statusCode).observe(duration);
-    httpRequestTotal.labels(req.method, route, res.statusCode).inc();
-    activeConnections.dec();
-  });
-
-  next();
-});
+// Middleware pour tracker les métriques Prometheus
+app.use(metricsMiddleware);
 
 /**
  * Route racine de l'API
@@ -194,18 +88,53 @@ app.use('/api/analytics', analyticsRoutes);
 app.get('/metrics', async (req, res) => {
   try {
     // Update business metrics from database
-    const [productsCount, ordersCount, usersCount, categoriesCount] = await Promise.all([
+    const [
+      productsCount, 
+      ordersCount, 
+      usersCount, 
+      categoriesCount,
+      revenueData,
+      lowStockCount,
+      activeUsersCount
+    ] = await Promise.all([
       prisma.product.count(),
       prisma.order.count(),
       prisma.user.count(),
-      prisma.category.count()
+      prisma.category.count(),
+      // Calculate total revenue and average order value
+      prisma.order.aggregate({
+        _sum: { total: true },
+        _avg: { total: true }
+      }),
+      // Count low stock products
+      prisma.product.count({
+        where: { stock: { lt: 10 } }
+      }),
+      // Count active users (users who placed orders) - use raw query
+      prisma.$queryRaw`SELECT COUNT(DISTINCT user_id) as count FROM orders`.then(result => Number(result[0]?.count || 0))
     ]);
 
-    // Update gauge values (gauges already registered at startup)
+    // Calculate today's revenue
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    
+    const todayRevenue = await prisma.order.aggregate({
+      where: {
+        createdAt: { gte: todayStart }
+      },
+      _sum: { total: true }
+    });
+
+    // Update gauge values
     productsGauge.set(productsCount);
     ordersGauge.set(ordersCount);
     usersGauge.set(usersCount);
     categoriesGauge.set(categoriesCount);
+    ordersTotalValue.set(Number(revenueData._sum.total) || 0);
+    averageOrderValue.set(Number(revenueData._avg.total) || 0);
+    lowStockProducts.set(lowStockCount);
+    revenueToday.set(Number(todayRevenue._sum.total) || 0);
+    activeUsers.set(activeUsersCount);
 
     res.set('Content-Type', register.contentType);
     res.end(await register.metrics());

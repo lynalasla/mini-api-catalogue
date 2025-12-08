@@ -37,7 +37,8 @@ node update-image-urls.cjs
 - Frontend: http://localhost:5173
 - API: http://localhost:3000
 - phpMyAdmin: http://localhost:8080
-- Grafana: http://localhost:3001
+- Grafana (Business Intelligence): http://localhost:3001 (admin/admin)
+- Prometheus (Métriques): http://localhost:9090
 
 ---
 
@@ -55,6 +56,7 @@ Cette application propose une solution complète pour :
 - **Analytics** : Module A/B Testing avec analyse statistique avancée
 - **Sécurité** : JWT, hashing bcrypt, validation des entrées, 0 vulnérabilités
 - **Backup** : Sauvegarde/restauration automatique des données en Excel
+- **Business Intelligence** : Dashboards Grafana temps réel avec métriques avancées
 
 ### 🏗️ Architecture technique
 
@@ -130,12 +132,14 @@ Cette application propose une solution complète pour :
 
 #### 👨‍💼 **Côté administrateur**
 
-- **Dashboard analytique**
+- **Dashboard Business Intelligence**
 
-  - Statistiques des ventes en temps réel
-  - Graphiques de performance
-  - Top produits et catégories
-  - Indicateurs KPI (CA, commandes, clients)
+  - 📊 **3 Dashboards Grafana professionnels** préconfigurés
+  - 💰 **Métriques financières** : CA total, panier moyen, revenus du jour
+  - 📦 **Suivi opérationnel** : Commandes, stock, alertes rupture
+  - 👥 **Analytics clients** : Utilisateurs actifs, taux de conversion
+  - ⚡ **Performance système** : Latence API, CPU, mémoire
+  - 📈 **Graphiques historiques** : Évolution des ventes en temps réel
 
 - **Gestion des produits**
 
@@ -200,25 +204,40 @@ Cette application propose une solution complète pour :
   npm run restore  # Restaurer depuis Excel
   ```
 
-#### 📊 **Monitoring & Observabilité (Grafana)**
+#### 📊 **Business Intelligence & Monitoring (Grafana)**
 
-- **Dashboards en temps réel**
+- **📈 Dashboard Business Intelligence**
 
-  - E-Commerce Overview : Métriques business (produits, commandes, utilisateurs, catégories)
-  - API Performance : Latence, taux de requêtes, statuts HTTP, Event Loop
-  - Graphiques interactifs avec historique
+  - **💰 Chiffre d'Affaires Total** : Revenus cumulés en temps réel
+  - **📦 Commandes Totales** : Nombre de commandes passées
+  - **👥 Clients Inscrits** : Base utilisateurs active
+  - **💵 Panier Moyen** : Valeur moyenne des commandes
+  - **📊 Évolution du CA** : Graphique historique des revenus
+  - **🎯 Taux de Conversion** : Performance des ventes
+  - **📉 Stock Faible** : Alertes produits en rupture
+  - **👤 Utilisateurs Actifs** : Clients ayant passé commande
 
-- **Métriques collectées**
+- **⚡ Dashboard API Performance**
 
-  - **Business** : Nombre de produits, commandes, utilisateurs, catégories
-  - **Performance** : Temps de réponse (p50, p95, p99), requêtes/seconde
-  - **Système** : CPU, mémoire, connexions actives, Garbage Collection
-  - **HTTP** : Statuts (2xx, 4xx, 5xx), endpoints les plus sollicités
+  - **CPU & Mémoire** : Utilisation ressources système
+  - **Latence HTTP** : Temps de réponse (p50, p95, p99)
+  - **Taux de Requêtes** : Requêtes/seconde par endpoint
+  - **Statuts HTTP** : Répartition 2xx, 4xx, 5xx
+  - **Event Loop Lag** : Performance Node.js
+  - **Connexions Actives** : Nombre de connexions simultanées
 
-- **Prometheus + Grafana**
+- **🛍️ Dashboard E-Commerce Overview**
+
+  - **Catalogue** : Nombre de produits et catégories
+  - **Commandes** : Volume et tendances
+  - **Utilisateurs** : Croissance de la base client
+  - **Performance** : Métriques globales du système
+
+- **🔧 Prometheus + Grafana**
   - Scraping automatique toutes les 15 secondes
+  - Métriques business calculées dynamiquement depuis MySQL
   - Rétention des données sur 15 jours
-  - Alertes configurables (optionnel)
+  - Dashboards pré-configurés et provisionnés
   - Accès : http://localhost:3001 (admin/admin)
 
 ### 🛠️ Stack technologique détaillée
@@ -437,8 +456,22 @@ mini-api-catalogue/
 │       ├── cli.py            # Interface CLI
 │       └── examples.py       # Exemples d'usage
 │
+├── 📁 Business Intelligence
+│   ├── config/metrics/       # Configuration métriques
+│   │   ├── prometheus.js     # Définition métriques custom
+│   │   └── middleware.js     # Middleware HTTP metrics
+│   ├── grafana/
+│   │   ├── dashboards/       # 3 dashboards JSON
+│   │   │   ├── business-intelligence.json
+│   │   │   ├── api-performance.json
+│   │   │   └── ecommerce-overview.json
+│   │   └── provisioning/     # Configuration auto
+│   │       ├── datasources/  # Prometheus datasource
+│   │       └── dashboards/   # Provider config
+│   └── prometheus.yml        # Config Prometheus
+│
 ├── 📁 DevOps
-│   ├── docker-compose.yml    # Orchestration 5 services
+│   ├── docker-compose.yml    # Orchestration 7 services
 │   ├── Dockerfile            # Backend image
 │   ├── Dockerfile.client     # Frontend image
 │   ├── nginx.conf            # Configuration reverse proxy
@@ -452,7 +485,10 @@ mini-api-catalogue/
 │   ├── API_DOCUMENTATION.md  # Doc API complète
 │   ├── BACKUP_README.md      # Guide backup/restore
 │   ├── RECOVERY.md           # Guide de récupération
-│   └── REACT_README.md       # Doc frontend
+│   ├── REACT_README.md       # Doc frontend
+│   ├── GRAFANA_SETUP.md      # Setup Grafana & Prometheus
+│   ├── GRAFANA_BUSINESS_INTELLIGENCE.md  # Guide BI
+│   └── GRAFANA_VERIFICATION.md  # Dépannage Grafana
 │
 └── 📁 Configuration
     ├── package.json          # Dépendances Node.js
@@ -547,6 +583,8 @@ mini-api-catalogue      Up
 react-dev              Up
 belibeli-nginx         Up
 phpmyadmin             Up
+prometheus-catalogue    Up
+grafana-catalogue       Up
 ```
 
 ### Étape 5 : Initialiser la base de données
@@ -631,6 +669,14 @@ curl http://localhost:3000/api/products
 # Utilisateur: catalogue_user
 # Mot de passe: catalogue_password
 
+# Tester Grafana (Business Intelligence)
+# 🌐 http://localhost:3001
+# Utilisateur: admin
+# Mot de passe: admin
+
+# Tester Prometheus (Métriques)
+# 🌐 http://localhost:9090
+
 # Voir les logs en temps réel
 docker-compose logs -f
 ```
@@ -661,6 +707,9 @@ Cochez chaque étape pour vous assurer que tout fonctionne :
 - [ ] **(Optionnel)** Backup restauré (`npm run restore`)
 - [ ] API testée (http://localhost:3000/api/products)
 - [ ] Frontend accessible (http://localhost:5173)
+- [ ] Grafana accessible (http://localhost:3001) avec login admin/admin
+- [ ] Dashboards BI fonctionnels (3 dashboards affichent des données)
+- [ ] Prometheus accessible (http://localhost:9090)
 - [ ] Premier backup créé (`npm run backup`)
 
 **✅ Installation terminée ! Votre application est prête à être utilisée.**
@@ -959,7 +1008,8 @@ docker-compose up -d
 - **[RECOVERY.md](RECOVERY.md)** - Procédures de récupération d'urgence
 - **[REACT_README.md](client/REACT_README.md)** - Documentation frontend React
 - **[GRAFANA_SETUP.md](GRAFANA_SETUP.md)** - Configuration Grafana & Prometheus
-- **[SUPERSET_SETUP.md](SUPERSET_SETUP.md)** - Configuration Apache Superset
+- **[GRAFANA_BUSINESS_INTELLIGENCE.md](GRAFANA_BUSINESS_INTELLIGENCE.md)** - Guide Business Intelligence
+- **[GRAFANA_VERIFICATION.md](GRAFANA_VERIFICATION.md)** - Vérification et dépannage Grafana
 
 ---
 
