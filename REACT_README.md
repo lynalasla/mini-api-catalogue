@@ -1,5 +1,4 @@
-# BeliBeli.com - Application React + Express
-
+.# BeliBeli.com - Application React + Express
 Application e-commerce complète avec React (frontend) et Express (backend API).
 
 ## 🚀 Architecture
