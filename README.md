@@ -37,9 +37,13 @@ node update-image-urls.cjs
 **📊 Services accessibles :**
 
 - Frontend: http://localhost:5173
+- <img width="1908" height="923" alt="image" src="https://github.com/user-attachments/assets/4fbf1f12-60fa-4a33-8682-005afff8e4c0" />
+
 - API: http://localhost:3000
 - phpMyAdmin: http://localhost:8080
 - Grafana (Business Intelligence): http://localhost:3001 (admin/admin)
+- <img width="1893" height="904" alt="image" src="https://github.com/user-attachments/assets/9329e258-da5a-4e53-a621-1deb58a3271c" />
+
 - Prometheus (Métriques): http://localhost:9090
 
 ---
