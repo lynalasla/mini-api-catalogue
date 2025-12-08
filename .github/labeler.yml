@@ -1,0 +1,37 @@
+# Pull request labeler configuration
+# See: https://github.com/actions/labeler
+
+backend:
+  - routes/**/*
+  - middleware/**/*
+  - config/**/*
+  - prisma/**/*
+  - '*.js'
+  - Dockerfile
+
+frontend:
+  - client/**/*
+  - client/src/**/*
+
+dependencies:
+  - package.json
+  - package-lock.json
+  - client/package.json
+  - client/package-lock.json
+
+documentation:
+  - '**/*.md'
+  - README.md
+
+database:
+  - prisma/**/*
+  - migrations/**/*
+  - '**/*.sql'
+
+docker:
+  - Dockerfile
+  - docker-compose.yml
+  - .dockerignore
+
+ci-cd:
+  - .github/**/*

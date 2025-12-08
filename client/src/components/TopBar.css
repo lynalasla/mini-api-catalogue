@@ -1,0 +1,44 @@
+.top-bar {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.top-bar-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar-left {
+  display: flex;
+  gap: 24px;
+}
+
+.top-bar-left a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.top-bar-left a:hover {
+  color: #ff6b00;
+}
+
+.top-bar-right a {
+  color: #ff6b00;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .top-bar-left {
+    gap: 12px;
+    font-size: 11px;
+    overflow-x: auto;
+  }
+}

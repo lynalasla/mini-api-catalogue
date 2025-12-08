@@ -1,0 +1,88 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║           📦 RESTAURATION BASE DE DONNÉES                    ║
+║                  Aide-Mémoire Rapide                         ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│  COMMANDE À UTILISER (COPIER-COLLER)                         │
+└──────────────────────────────────────────────────────────────┘
+
+  node restore-database.cjs backups/database_backup_2025-12-04T23-26-27.xlsx
+
+┌──────────────────────────────────────────────────────────────┐
+│  AVANT DE LANCER                                             │
+└──────────────────────────────────────────────────────────────┘
+
+  1. ✅ Vous êtes à la RACINE du projet (mini-api-catalogue/)
+  2. ✅ Docker est démarré : docker-compose ps
+  3. ✅ Dépendances installées : npm install
+  4. ✅ Schéma appliqué : npx prisma db push
+
+┌──────────────────────────────────────────────────────────────┐
+│  APRÈS LA RESTAURATION                                       │
+└──────────────────────────────────────────────────────────────┘
+
+  ⚠️  NOTEZ les mots de passe temporaires affichés !
+  
+  Exemple de sortie :
+  
+    👤 🔐 ADMIN
+       Email:    admin@catalogue.com
+       Password: Tempmcfxhs6n!
+    
+    👤 USER
+       Email:    user@catalogue.com
+       Password: Tempz9amf21a!
+
+┌──────────────────────────────────────────────────────────────┐
+│  VÉRIFICATION                                                │
+└──────────────────────────────────────────────────────────────┘
+
+  1. Frontend : http://localhost:5173
+  2. Connexion avec les identifiants temporaires
+  3. Changer le mot de passe après connexion
+
+┌──────────────────────────────────────────────────────────────┐
+│  EN CAS DE PROBLÈME                                          │
+└──────────────────────────────────────────────────────────────┘
+
+  📚 Consultez : RESTAURATION_GUIDE.md
+  
+  Problèmes courants :
+  
+  ❌ "Fichier non trouvé"
+     → Vérifiez que vous êtes à la racine : pwd
+  
+  ❌ "Unknown argument imageUrl"
+     → Utilisez .cjs pas .js : restore-database.cjs
+  
+  ❌ "Cannot find module exceljs"
+     → npm install exceljs --save-dev
+  
+  ❌ "Cannot connect to database"
+     → docker-compose up -d && sleep 30
+
+┌──────────────────────────────────────────────────────────────┐
+│  GUIDES DISPONIBLES                                          │
+└──────────────────────────────────────────────────────────────┘
+
+  🆕 GUIDE_COLLABORATEURS.md  → Démarrage rapide
+  📦 RESTAURATION_GUIDE.md    → Guide complet restauration
+  📋 backups/README.md        → Guide dossier backups
+  📚 BACKUP_README.md         → Documentation backup/restore
+  📖 README.md                → Documentation principale
+
+┌──────────────────────────────────────────────────────────────┐
+│  SCRIPT D'AIDE INTERACTIF                                    │
+└──────────────────────────────────────────────────────────────┘
+
+  ./restore-helper.sh
+  
+  Ce script vous guide pas à pas dans le processus
+
+╔══════════════════════════════════════════════════════════════╗
+║  💡 Astuce : Gardez ce fichier ouvert pendant la            ║
+║     restauration pour référence rapide                       ║
+╚══════════════════════════════════════════════════════════════╝

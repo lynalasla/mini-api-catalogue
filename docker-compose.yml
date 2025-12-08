@@ -1,0 +1,177 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-catalogue
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: catalogue
+      MYSQL_USER: catalogue_user
+      MYSQL_PASSWORD: catalogue_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin-catalogue
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: catalogue_user
+      PMA_PASSWORD: catalogue_password
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mini-api-catalogue:
+    build: .
+    container_name: mini-api-catalogue
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=catalogue_user
+      - DB_PASSWORD=catalogue_password
+      - DB_NAME=catalogue
+      - DB_PORT=3306
+      - DATABASE_URL=mysql://catalogue_user:catalogue_password@mysql:3306/catalogue
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production-2024
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  react-dev:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: belibeli-react-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - mini-api-catalogue
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: belibeli-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - mini-api-catalogue
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-catalogue
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    restart: unless-stopped
+    depends_on:
+      - mini-api-catalogue
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-catalogue
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  metrics-init:
+    image: curlimages/curl:latest
+    container_name: metrics-init-catalogue
+    depends_on:
+      - mini-api-catalogue
+      - grafana
+      - prometheus
+    command: >
+      sh -c "
+      echo '🚀 Initialisation des métriques Grafana...' &&
+      echo '' &&
+      echo '⏳ Attente du démarrage de l API (max 60s)...' &&
+      for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do
+        if curl -sf http://mini-api-catalogue:3000/health > /dev/null 2>&1; then
+          echo '✅ API prête!' &&
+          break
+        fi
+        echo \"   Tentative $$i/30...\" &&
+        sleep 2
+      done &&
+      echo '' &&
+      sleep 5 &&
+      echo '📊 Génération de données initiales pour Grafana...' &&
+      for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do
+        curl -s http://mini-api-catalogue:3000/api/products > /dev/null 2>&1 &
+        curl -s http://mini-api-catalogue:3000/api/categories > /dev/null 2>&1 &
+        curl -s http://mini-api-catalogue:3000/api/orders > /dev/null 2>&1 &
+        if [ $$((i % 10)) -eq 0 ]; then
+          echo \"   📤 $$i/30 requêtes envoyées...\"
+        fi
+        sleep 0.5
+      done &&
+      wait &&
+      echo '' &&
+      echo '✅ Initialisation terminée!' &&
+      echo '' &&
+      echo '📊 Vérification métriques:' &&
+      curl -s http://mini-api-catalogue:3000/metrics | grep -E '^(products_count|orders_count|users_count|categories_count)' &&
+      echo '' &&
+      echo '🌐 Services disponibles:' &&
+      echo '   - Grafana: http://localhost:3001 (admin/admin)' &&
+      echo '   - API: http://localhost:3000' &&
+      echo '   - Frontend: http://localhost:5173' &&
+      echo '' &&
+      echo '💡 Conseil: Dans Grafana, utilisez Last 5 minutes comme plage de temps' &&
+      echo '' &&
+      echo '✨ Les dashboards ont maintenant des données!' &&
+      sleep infinity
+      "
+    restart: "no"
+    networks:
+      - default
+
+volumes:
+  mysql_data:
+  prometheus_data:
+  grafana_data:
