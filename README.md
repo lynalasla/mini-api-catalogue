@@ -780,21 +780,30 @@ npm update
 
 ## 📊 Utilisation de Grafana
 
-### ✨ Dashboards Automatiquement Provisionnés
+### ✨ Dashboards Automatiquement Provisionnés ET Pré-remplis
 
-**Les dashboards sont automatiquement chargés au démarrage de Grafana !**
+**Les dashboards sont automatiquement chargés ET pré-remplis avec des données au démarrage !**
 
 1. **Ouvrir Grafana** : http://localhost:3001
 2. **Se connecter** : admin / admin
 3. **Accéder aux dashboards** :
    - Menu latéral → **Dashboards** → Dossier **E-Commerce**
-   - Les 2 dashboards sont déjà disponibles, aucune configuration requise !
+   - Les 2 dashboards sont déjà disponibles **avec des données** !
+
+**✨ Nouveauté** : Au premier `docker-compose up`, un service d'initialisation :
+
+- Attend que l'API soit prête (max 60s)
+- Génère automatiquement 30 requêtes
+- Les dashboards sont **pré-remplis** dès le démarrage !
 
 **Vérification rapide** :
 
 ```bash
 # Vérifier que les dashboards sont chargés
 bash verify-grafana-dashboards.sh
+
+# Voir les logs d'initialisation
+docker logs metrics-init-catalogue
 ```
 
 ### Dashboards disponibles

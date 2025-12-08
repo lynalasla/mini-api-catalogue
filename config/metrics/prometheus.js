@@ -86,6 +86,49 @@ const categoriesGauge = new promClient.Gauge({
   help: 'Total number of categories'
 });
 
+// ============ BUSINESS INTELLIGENCE METRICS ============
+
+const ordersTotalValue = new promClient.Gauge({
+  name: 'orders_total_value',
+  help: 'Total value of all orders (revenue)'
+});
+
+const averageOrderValue = new promClient.Gauge({
+  name: 'average_order_value',
+  help: 'Average order value'
+});
+
+const conversionRate = new promClient.Gauge({
+  name: 'conversion_rate',
+  help: 'Conversion rate (orders / unique visitors)'
+});
+
+const customerLifetimeValue = new promClient.Histogram({
+  name: 'customer_lifetime_value',
+  help: 'Distribution of customer lifetime values',
+  buckets: [10, 50, 100, 500, 1000, 5000, 10000]
+});
+
+const lowStockProducts = new promClient.Gauge({
+  name: 'low_stock_products_count',
+  help: 'Number of products with low stock (< 10 units)'
+});
+
+const revenueToday = new promClient.Gauge({
+  name: 'revenue_today',
+  help: 'Revenue generated today'
+});
+
+const ordersToday = new promClient.Gauge({
+  name: 'orders_today',
+  help: 'Number of orders today'
+});
+
+const activeUsers = new promClient.Gauge({
+  name: 'active_users_count',
+  help: 'Number of users who placed at least one order'
+});
+
 // ============ REGISTER METRICS ============
 
 register.registerMetric(httpRequestDuration);
@@ -100,6 +143,14 @@ register.registerMetric(productsGauge);
 register.registerMetric(ordersGauge);
 register.registerMetric(usersGauge);
 register.registerMetric(categoriesGauge);
+register.registerMetric(ordersTotalValue);
+register.registerMetric(averageOrderValue);
+register.registerMetric(conversionRate);
+register.registerMetric(customerLifetimeValue);
+register.registerMetric(lowStockProducts);
+register.registerMetric(revenueToday);
+register.registerMetric(ordersToday);
+register.registerMetric(activeUsers);
 
 // ============ EXPORTS ============
 
@@ -116,5 +167,13 @@ export {
   productsGauge,
   ordersGauge,
   usersGauge,
-  categoriesGauge
+  categoriesGauge,
+  ordersTotalValue,
+  averageOrderValue,
+  conversionRate,
+  customerLifetimeValue,
+  lowStockProducts,
+  revenueToday,
+  ordersToday,
+  activeUsers
 };

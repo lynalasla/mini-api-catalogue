@@ -118,26 +118,6 @@ services:
     depends_on:
       - prometheus
 
-  superset:
-    image: apache/superset:latest
-    container_name: superset-catalogue
-    ports:
-      - "8088:8088"
-    environment:
-      - SUPERSET_SECRET_KEY=votre_cle_secrete_changez_moi
-      - SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
-    volumes:
-      - superset_data:/app/superset_home
-      - ./superset_config.py:/app/pythonpath/superset_config.py
-    command: >
-      sh -c "superset db upgrade &&
-             superset fab create-admin --username admin --firstname Admin --lastname User --email admin@superset.com --password admin &&
-             superset init &&
-             superset run -h 0.0.0.0 -p 8088 --with-threads --reload"
-    restart: unless-stopped
-    depends_on:
-      - mysql
-
   metrics-init:
     image: curlimages/curl:latest
     container_name: metrics-init-catalogue
@@ -195,4 +175,3 @@ volumes:
   mysql_data:
   prometheus_data:
   grafana_data:
-  superset_data:
