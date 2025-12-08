@@ -38,7 +38,6 @@ node update-image-urls.cjs
 
 - Frontend: http://localhost:5173
 - <img width="1908" height="923" alt="image" src="https://github.com/user-attachments/assets/4fbf1f12-60fa-4a33-8682-005afff8e4c0" />
-<img width="1907" height="907" alt="image" src="https://github.com/user-attachments/assets/222da127-4e05-40d1-a3e5-584be1be3375" />
 <img width="1911" height="910" alt="image" src="https://github.com/user-attachments/assets/5843e106-6a0a-4298-aad9-d686e162b988" />
 <img width="1901" height="949" alt="image" src="https://github.com/user-attachments/assets/6f54124e-7123-4627-9ee8-728571d92a3d" />
 
@@ -51,7 +50,8 @@ node update-image-urls.cjs
 - <img width="1893" height="904" alt="image" src="https://github.com/user-attachments/assets/9329e258-da5a-4e53-a621-1deb58a3271c" />
 <img width="1905" height="888" alt="image" src="https://github.com/user-attachments/assets/31ecb69f-66e7-4039-9d53-9066048ac00c" />
 <img width="1895" height="921" alt="image" src="https://github.com/user-attachments/assets/0a87ded6-2ada-4ee2-806c-165ed3aa3892" />
-<img width="1883" height="909" alt="image" src="https://github.com/user-attachments/assets/fa01fea1-c2e0-431d-8ea8-d356fbfb3f92" />
+<img width="1897" height="909" alt="image" src="https://github.com/user-attachments/assets/144b658f-2f29-4d4e-b2a3-76c2081b3590" />
+<img width="1885" height="913" alt="image" src="https://github.com/user-attachments/assets/5f0efea7-c0e4-42a3-b436-34f90ce70f20" />
 <img width="1906" height="907" alt="image" src="https://github.com/user-attachments/assets/31a1ec00-4ff1-47b3-93df-cfc1ae81288d" />
 
 
